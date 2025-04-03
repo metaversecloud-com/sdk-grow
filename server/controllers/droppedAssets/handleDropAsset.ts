@@ -21,8 +21,19 @@ export const handleDropAsset = async (req: Request, res: Response): Promise<Reco
       uniqueName,
       urlSlug: credentials.urlSlug,
     });
+    console.log("Dropped Asset: ", droppedAsset);
 
-    return res.json({ droppedAsset, success: true });
+    const keyAsset = await droppedAsset.setDataObject({
+     
+      keyAssetId: droppedAsset.id,
+
+    })
+    console.log("Dropped Asset Data Object: ", droppedAsset.dataObject);
+
+    //return res.json({"Dropped Asset": droppedAsset, "Key Asset Data Object": keyAsset, success: true });
+    return res.json({droppedAsset, success: true });
+    //return res.json({ keyAsset, success: true });
+
   } catch (error) {
     return errorHandler({
       error,

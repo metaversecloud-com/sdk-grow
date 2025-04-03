@@ -1,5 +1,6 @@
 import { useCallback, useContext, useEffect, useMemo, useState } from "react";
 import { Route, Routes, useNavigate, useSearchParams } from "react-router-dom";
+import {AdminView} from "./components/AdminView";
 
 // pages
 import Home from "@pages/Home";
@@ -81,6 +82,7 @@ const App = () => {
     <Routes>
       <Route path="/" element={<Home />} />
       <Route path="*" element={<Error />} />
+      <Route path="/admin" element={<AdminView />} />
     </Routes>
   );
 };

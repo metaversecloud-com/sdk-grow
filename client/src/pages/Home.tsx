@@ -9,6 +9,8 @@ import { GlobalDispatchContext, GlobalStateContext } from "@/context/GlobalConte
 // utils
 import { backendAPI, setErrorMessage, setGameState } from "@/utils";
 
+import {AdminIconButton} from "@/components/AdminIconButton";
+
 const defaultDroppedAsset = { assetName: "", bottomLayerURL: "", id: null, topLayerURL: null };
 
 const Home = () => {
@@ -19,11 +21,17 @@ const Home = () => {
   const [areButtonsDisabled, setAreButtonsDisabled] = useState(false);
   const [droppedAsset, setDroppedAsset] = useState(defaultDroppedAsset);
 
+  const [showSettings, setShowSettings] = useState(false);
+
+  const[admin, SetIsAdmin] = useState(false);
+
+
   useEffect(() => {
     if (hasInteractiveParams) {
       backendAPI
         .get("/dropped-asset")
         .then((response) => {
+          console.log("REPONSE FOR USEEFFECT: ", response);
           setGameState(dispatch, response.data);
           setDroppedAsset(response.data.droppedAsset);
         })
@@ -31,6 +39,23 @@ const Home = () => {
         .finally(() => {
           setIsLoading(false);
           console.log("🚀 ~ Home.tsx ~ gameState:", gameState);
+        });
+
+        backendAPI
+        .get("/visitor")
+        .then((response) => {
+          console.log("SUCCESS");
+          console.log("Response: ", response);
+          console.log("RESPONSE DATA: ", response.data);
+          const  {visitor}  = response.data;
+          console.log("VISITOR: ", visitor);
+          console.log("Visitor Admin: ", visitor.isAdmin);
+          SetIsAdmin(visitor.isAdmin);
+          
+        })
+        .catch((error) => setErrorMessage(dispatch, error))
+        .finally(() => {
+          setAreButtonsDisabled(false);
         });
     }
   }, [hasInteractiveParams]);
@@ -42,6 +67,7 @@ const Home = () => {
     backendAPI
       .get("/dropped-asset")
       .then((response) => {
+        console.log("Response: ", response);
         setDroppedAsset(response.data.droppedAsset);
       })
       .catch((error) => setErrorMessage(dispatch, error))
@@ -50,41 +76,54 @@ const Home = () => {
       });
   };
 
+  const handleWorldAsset = async () => {
+    setAreButtonsDisabled(true);
+    setDroppedAsset(defaultDroppedAsset);
+
+    backendAPI
+      .get("/world")
+      .then((response) => {
+        console.log("SUCCESS");
+        console.log("Response: ", response);
+        return response;
+      })
+      .catch((error) => setErrorMessage(dispatch, error))
+      .finally(() => {
+        setAreButtonsDisabled(false);
+        
+      });
+  };
+
+  const handleVisitor = async () => {
+    setAreButtonsDisabled(true);
+    setDroppedAsset(defaultDroppedAsset);
+
+   
+  };
+
   if (!hasSetupBackend) return <div />;
 
   return (
     <PageContainer isLoading={isLoading}>
       <>
-        <h1 className="h2">Server side example using interactive parameters</h1>
-        <div className="max-w-screen-lg">
-          {!hasInteractiveParams ? (
-            <p>
-              Edit an asset in your world and open the Links page in the Modify Asset drawer and add a link to your
-              website or use &quot;http://localhost:3000&quot; for testing locally. You can also add assetId,
-              interactiveNonce, interactivePublicKey, urlSlug, and visitorId directly to the URL as search parameters to
-              use this feature.
-            </p>
-          ) : (
-            <p className="my-4">Interactive parameters found, nice work!</p>
-          )}
-        </div>
+        <h1 className="h2">Grow App</h1>
 
-        {droppedAsset.id && (
-          <div className="flex flex-col w-full items-start">
-            <p className="mt-4 mb-2">
-              You have successfully retrieved the dropped asset details for {droppedAsset.assetName}!
-            </p>
+        {droppedAsset.id && admin && (
+          <div className="flex flex-col w-full ">
             <img
               className="w-96 h-96 object-cover rounded-2xl my-4"
-              alt="preview"
-              src={droppedAsset.topLayerURL || droppedAsset.bottomLayerURL}
+              alt="Pump"
+              src = "../../public/Pump0.png"
             />
+           <AdminIconButton showSettings = {showSettings} setShowSettings= {setShowSettings} />
+            
           </div>
+
         )}
 
         <PageFooter>
-          <button className="btn" disabled={areButtonsDisabled} onClick={handleGetDroppedAsset}>
-            Get Dropped Asset Details
+          <button className="btn" disabled={areButtonsDisabled} onClick={handleVisitor}>
+            Check In
           </button>
         </PageFooter>
       </>
