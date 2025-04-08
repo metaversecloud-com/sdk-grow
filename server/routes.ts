@@ -6,9 +6,8 @@ import {
   handleRemoveDroppedAssetsByUniqueName,
   handleGetWorldDetails,
   handleUpdateWorldDataObject,
-  handleFire,
-  Toast,
   handleCheckIn,
+  handleFireToast,
 } from "./controllers/index.js";
 import { getVersion } from "./utils/getVersion.js";
 
