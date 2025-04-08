@@ -31,7 +31,7 @@ const Home = () => {
   useEffect(() => {
     if (hasInteractiveParams) {
       backendAPI
-        .get("/check-in")
+        .get("/world")
         .then((response) => {
           console.log("REPONSE FOR USEEFFECT: ", response);
           setGameState(dispatch, response.data);
@@ -72,6 +72,23 @@ const Home = () => {
       .then((response) => {
         console.log("Response: ", response);
         setDroppedAsset(response.data.droppedAsset);
+      })
+      .catch((error) => setErrorMessage(dispatch, error))
+      .finally(() => {
+        setAreButtonsDisabled(false);
+      });
+  };
+
+  const handleCheckIn = async () => {
+    setAreButtonsDisabled(true);
+    //setDroppedAsset(defaultDroppedAsset);
+
+    backendAPI
+      .get("/check-in")
+      .then((response) => {
+        console.log("Response FOR CHECKING IN: ", response);
+        setTally(response.data.tally);
+        
       })
       .catch((error) => setErrorMessage(dispatch, error))
       .finally(() => {
@@ -123,14 +140,14 @@ const Home = () => {
           </div>
 
           <div className="flex flex-col w-full ">
-            Tally: 
+            Tally: {tally}
           </div>
 
 
         
 
         <PageFooter>
-          <button className="btn" disabled={areButtonsDisabled} onClick={handleWorldAsset}>
+          <button className="btn" disabled={areButtonsDisabled} onClick={handleCheckIn}>
             Check In
           </button>
         </PageFooter>

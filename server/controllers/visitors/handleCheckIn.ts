@@ -27,7 +27,9 @@ export const handleCheckIn = async (req: Request, res: Response) => {
 
     console.log("Data object before update: ", droppedAsset.dataObject);
 
-     //Provide a minimal TS type so we can handle dailyCheckIns safely
+     //Provide a TS type so we can handle dailyCheckIns safely
+     //dailyCheckIns is a mapping of data keys to the total number of check ins for that day
+     //and a mapping of userIds to the time they checked in
       interface CheckInDataObject {
         dailyCheckIns?: Record<
           string, // date key: "YYYY-MM-DD"
@@ -50,14 +52,14 @@ export const handleCheckIn = async (req: Request, res: Response) => {
         dataObject.dailyCheckIns = {};
     }
 
-    //checking if user already checked in today
+    //checking if any user has checked in today
     const todayKey = getTodayKey();
     const todayEntry = dataObject.dailyCheckIns[todayKey] || {
       total: 0,
       users: {},
     };
     
-    //if users is in date mapping, return success json message
+    //if users is in date mapping (already checked in), return already checked in json message
     if (todayEntry.users[profileId]) {
         // Already checked in
         return res.json({
@@ -68,19 +70,39 @@ export const handleCheckIn = async (req: Request, res: Response) => {
         });
       }
     
-      
+    //checking user in with current date
+    const newTotal = todayEntry.total + 1;
+    const checkInTime = new Date().toISOString();
+
+    const updates = {
+        [`dailyCheckIns.${todayKey}.total`]: newTotal,
+        // Optionally store the timestamp for each user
+        [`dailyCheckIns.${todayKey}.users.${profileId}`]: checkInTime,
+      };
+    
     console.log("Fetched Dropped Asset Data Object: ", droppedAsset.dataObject);
 
     // If the application will make any updates to a dropped asset's data object we need to
     // first instantiate to ensure it's existence and define it's proper structure.
     // The same should be true for World, User, and Visitor data objects
     
-    await droppedAsset.updateDataObject({ checkInTime });
+    await droppedAsset.updateDataObject(updates);
+    console.log("Updated Dropped Asset Data Object: ", droppedAsset.dataObject);
 
-    console.log("UPDATED DROPPED ASSET DATA OBJECT: ", droppedAsset);
+    await droppedAsset.fetchDataObject();
+    console.log("Fetched Dropped Asset Data Object AFTER UPDATE: ", droppedAsset.dataObject);
+
+    return res.json({
+        success: true,
+        message: "Checked in successfully!",
+        tally: newTotal,
+        droppedAsset,
+      });
+
+   
 
 
-    return res.json({ droppedAsset, success: true });
+    //return res.json({ droppedAsset, success: true });
   } catch (error) {
     return errorHandler({
       error,
