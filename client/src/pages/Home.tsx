@@ -9,11 +9,8 @@ import { GlobalDispatchContext, GlobalStateContext } from "@/context/GlobalConte
 // utils
 import { backendAPI, setErrorMessage, setGameState } from "@/utils";
 
-<<<<<<< HEAD
-=======
-import {AdminIconButton} from "@/components/AdminIconButton";
+import { AdminIconButton } from "@/components/AdminIconButton";
 
->>>>>>> main
 const defaultDroppedAsset = { assetName: "", bottomLayerURL: "", id: null, topLayerURL: null };
 
 const Home = () => {
@@ -24,24 +21,11 @@ const Home = () => {
   const [areButtonsDisabled, setAreButtonsDisabled] = useState(false);
   const [droppedAsset, setDroppedAsset] = useState(defaultDroppedAsset);
 
-<<<<<<< HEAD
-  useEffect(() => {
-    if (hasInteractiveParams) {
-      backendAPI
-        .get("/dropped-asset")
-        .then((response) => {
-          setGameState(dispatch, response.data);
-          setDroppedAsset(response.data.droppedAsset);
-        })
-        .then(() => {
-          backendAPI.put("/world/fire-toast");
-=======
   const [showSettings, setShowSettings] = useState(false);
 
-  const[admin, SetIsAdmin] = useState(false);
+  const [admin, SetIsAdmin] = useState(false);
 
-  const[tally, setTally] = useState(0);
-
+  const [tally, setTally] = useState(0);
 
   useEffect(() => {
     if (hasInteractiveParams) {
@@ -52,51 +36,39 @@ const Home = () => {
           setGameState(dispatch, response.data);
           setDroppedAsset(response.data.droppedAsset);
           console.log("DROPPED ASSET DATA: ", droppedAsset);
->>>>>>> main
         })
         .catch((error) => setErrorMessage(dispatch, error))
         .finally(() => {
           setIsLoading(false);
           console.log("🚀 ~ Home.tsx ~ gameState:", gameState);
         });
-<<<<<<< HEAD
-=======
 
-         backendAPI
-      .get("/visitor")
-      .then((response) => {
-        console.log("SUCCESS");
-        console.log("Response: ", response);
-        console.log("RESPONSE DATA: ", response.data);
-        const  {visitor}  = response.data;
-        console.log("VISITOR: ", visitor);
-        console.log("Visitor Admin: ", visitor.isAdmin);
-        SetIsAdmin(visitor.isAdmin);
-        
-      })
-      .catch((error) => setErrorMessage(dispatch, error))
-      .finally(() => {
-        setAreButtonsDisabled(false);
-      });
->>>>>>> main
+      backendAPI
+        .get("/visitor")
+        .then((response) => {
+          console.log("SUCCESS");
+          console.log("Response: ", response);
+          console.log("RESPONSE DATA: ", response.data);
+          const { visitor } = response.data;
+          console.log("VISITOR: ", visitor);
+          console.log("Visitor Admin: ", visitor.isAdmin);
+          SetIsAdmin(visitor.isAdmin);
+        })
+        .catch((error) => setErrorMessage(dispatch, error))
+        .finally(() => {
+          setAreButtonsDisabled(false);
+        });
     }
   }, [hasInteractiveParams]);
 
   const handleGetDroppedAsset = async () => {
     setAreButtonsDisabled(true);
-<<<<<<< HEAD
-    setDroppedAsset(defaultDroppedAsset);
-=======
     //setDroppedAsset(defaultDroppedAsset);
->>>>>>> main
 
     backendAPI
       .get("/dropped-asset")
       .then((response) => {
-<<<<<<< HEAD
-=======
         console.log("Response: ", response);
->>>>>>> main
         setDroppedAsset(response.data.droppedAsset);
       })
       .catch((error) => setErrorMessage(dispatch, error))
@@ -105,8 +77,6 @@ const Home = () => {
       });
   };
 
-<<<<<<< HEAD
-=======
   const handleCheckIn = async () => {
     setAreButtonsDisabled(true);
     //setDroppedAsset(defaultDroppedAsset);
@@ -116,7 +86,6 @@ const Home = () => {
       .then((response) => {
         console.log("Response FOR CHECKING IN: ", response);
         setTally(response.data.tally);
-        
       })
       .catch((error) => setErrorMessage(dispatch, error))
       .finally(() => {
@@ -138,79 +107,31 @@ const Home = () => {
       .catch((error) => setErrorMessage(dispatch, error))
       .finally(() => {
         setAreButtonsDisabled(false);
-        
       });
   };
 
   const handleVisitor = async () => {
     setAreButtonsDisabled(true);
     //setDroppedAsset(defaultDroppedAsset);
-
-   
   };
 
->>>>>>> main
   if (!hasSetupBackend) return <div />;
 
   return (
     <PageContainer isLoading={isLoading}>
       <>
-<<<<<<< HEAD
-        <h1 className="h2">Server side example using interactive parameters</h1>
-        <div className="max-w-screen-lg">
-          {!hasInteractiveParams ? (
-            <p>
-              Edit an asset in your world and open the Links page in the Modify Asset drawer and add a link to your
-              website or use &quot;http://localhost:3000&quot; for testing locally. You can also add assetId,
-              interactiveNonce, interactivePublicKey, urlSlug, and visitorId directly to the URL as search parameters to
-              use this feature.
-            </p>
-          ) : (
-            <p className="my-4">Interactive parameters found, nice work!</p>
-          )}
-        </div>
-
-        {droppedAsset.id && (
-          <div className="flex flex-col w-full items-start">
-            <p className="mt-4 mb-2">
-              You have successfully retrieved the dropped asset details for {droppedAsset.assetName}!
-            </p>
-            <img
-              className="w-96 h-96 object-cover rounded-2xl my-4"
-              alt="preview"
-              src={droppedAsset.topLayerURL || droppedAsset.bottomLayerURL}
-            />
-          </div>
-        )}
-
-        <PageFooter>
-          <button className="btn" disabled={areButtonsDisabled} onClick={handleGetDroppedAsset}>
-            Get Dropped Asset Details
-=======
         <h1 className="h2">Grow App</h1>
 
-     
-          <div className="flex flex-col w-full ">
-            <img
-              className="w-96 h-96 object-cover rounded-2xl my-4"
-              alt="Pump"
-              src = "../../public/Pump0.png"
-            />
-           {admin && <AdminIconButton showSettings = {showSettings} setShowSettings= {setShowSettings} />}
-            
-          </div>
+        <div className="flex flex-col w-full ">
+          <img className="w-96 h-96 object-cover rounded-2xl my-4" alt="Pump" src="../../public/Pump0.png" />
+          {admin && <AdminIconButton showSettings={showSettings} setShowSettings={setShowSettings} />}
+        </div>
 
-          <div className="flex flex-col w-full ">
-            Tally: {tally}
-          </div>
-
-
-        
+        <div className="flex flex-col w-full ">Tally: {tally}</div>
 
         <PageFooter>
           <button className="btn" disabled={areButtonsDisabled} onClick={handleCheckIn}>
             Check In
->>>>>>> main
           </button>
         </PageFooter>
       </>

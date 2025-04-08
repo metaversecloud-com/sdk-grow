@@ -6,12 +6,9 @@ import {
   handleRemoveDroppedAssetsByUniqueName,
   handleGetWorldDetails,
   handleUpdateWorldDataObject,
-<<<<<<< HEAD
-  handleFireToast,
-=======
+  handleFire,
+  Toast,
   handleCheckIn,
-
->>>>>>> main
 } from "./controllers/index.js";
 import { getVersion } from "./utils/getVersion.js";
 
@@ -47,15 +44,8 @@ router.get("/visitor", handleGetVisitor);
 // World
 router.get("/world", handleGetWorldDetails);
 router.put("/world/data-object", handleUpdateWorldDataObject);
-<<<<<<< HEAD
 router.put("/world/fire-toast", handleFireToast);
 
-export default router;
-=======
-
-
-// Check In
 router.get("/check-in", handleCheckIn);
 
 export default router;
->>>>>>> main
