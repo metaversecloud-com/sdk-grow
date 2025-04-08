@@ -9,6 +9,7 @@ export const handleGetDroppedAsset = async (req: Request, res: Response) => {
     const { assetId, urlSlug } = credentials;
     
     const droppedAsset = await DroppedAsset.get(assetId, urlSlug, { credentials });
+    console.log("Dropped Asset: ", droppedAsset);
 
     const keyAsset = await droppedAsset.setDataObject({
      

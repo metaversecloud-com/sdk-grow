@@ -6,6 +6,8 @@ import {
   handleRemoveDroppedAssetsByUniqueName,
   handleGetWorldDetails,
   handleUpdateWorldDataObject,
+  handleCheckIn,
+
 } from "./controllers/index.js";
 import { getVersion } from "./utils/getVersion.js";
 
@@ -41,5 +43,9 @@ router.get("/visitor", handleGetVisitor);
 // World
 router.get("/world", handleGetWorldDetails);
 router.put("/world/data-object", handleUpdateWorldDataObject);
+
+
+// Check In
+router.get("/check-in", handleCheckIn);
 
 export default router;

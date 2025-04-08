@@ -25,15 +25,18 @@ const Home = () => {
 
   const[admin, SetIsAdmin] = useState(false);
 
+  const[tally, setTally] = useState(0);
+
 
   useEffect(() => {
     if (hasInteractiveParams) {
       backendAPI
-        .get("/dropped-asset")
+        .get("/check-in")
         .then((response) => {
           console.log("REPONSE FOR USEEFFECT: ", response);
           setGameState(dispatch, response.data);
           setDroppedAsset(response.data.droppedAsset);
+          console.log("DROPPED ASSET DATA: ", droppedAsset);
         })
         .catch((error) => setErrorMessage(dispatch, error))
         .finally(() => {
@@ -41,28 +44,28 @@ const Home = () => {
           console.log("🚀 ~ Home.tsx ~ gameState:", gameState);
         });
 
-        backendAPI
-        .get("/visitor")
-        .then((response) => {
-          console.log("SUCCESS");
-          console.log("Response: ", response);
-          console.log("RESPONSE DATA: ", response.data);
-          const  {visitor}  = response.data;
-          console.log("VISITOR: ", visitor);
-          console.log("Visitor Admin: ", visitor.isAdmin);
-          SetIsAdmin(visitor.isAdmin);
-          
-        })
-        .catch((error) => setErrorMessage(dispatch, error))
-        .finally(() => {
-          setAreButtonsDisabled(false);
-        });
+         backendAPI
+      .get("/visitor")
+      .then((response) => {
+        console.log("SUCCESS");
+        console.log("Response: ", response);
+        console.log("RESPONSE DATA: ", response.data);
+        const  {visitor}  = response.data;
+        console.log("VISITOR: ", visitor);
+        console.log("Visitor Admin: ", visitor.isAdmin);
+        SetIsAdmin(visitor.isAdmin);
+        
+      })
+      .catch((error) => setErrorMessage(dispatch, error))
+      .finally(() => {
+        setAreButtonsDisabled(false);
+      });
     }
   }, [hasInteractiveParams]);
 
   const handleGetDroppedAsset = async () => {
     setAreButtonsDisabled(true);
-    setDroppedAsset(defaultDroppedAsset);
+    //setDroppedAsset(defaultDroppedAsset);
 
     backendAPI
       .get("/dropped-asset")
@@ -78,7 +81,7 @@ const Home = () => {
 
   const handleWorldAsset = async () => {
     setAreButtonsDisabled(true);
-    setDroppedAsset(defaultDroppedAsset);
+    console.log("ASSET: ", droppedAsset);
 
     backendAPI
       .get("/world")
@@ -96,7 +99,7 @@ const Home = () => {
 
   const handleVisitor = async () => {
     setAreButtonsDisabled(true);
-    setDroppedAsset(defaultDroppedAsset);
+    //setDroppedAsset(defaultDroppedAsset);
 
    
   };
@@ -108,21 +111,26 @@ const Home = () => {
       <>
         <h1 className="h2">Grow App</h1>
 
-        {droppedAsset.id && admin && (
+     
           <div className="flex flex-col w-full ">
             <img
               className="w-96 h-96 object-cover rounded-2xl my-4"
               alt="Pump"
               src = "../../public/Pump0.png"
             />
-           <AdminIconButton showSettings = {showSettings} setShowSettings= {setShowSettings} />
+           {admin && <AdminIconButton showSettings = {showSettings} setShowSettings= {setShowSettings} />}
             
           </div>
 
-        )}
+          <div className="flex flex-col w-full ">
+            Tally: 
+          </div>
+
+
+        
 
         <PageFooter>
-          <button className="btn" disabled={areButtonsDisabled} onClick={handleVisitor}>
+          <button className="btn" disabled={areButtonsDisabled} onClick={handleWorldAsset}>
             Check In
           </button>
         </PageFooter>
