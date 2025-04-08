@@ -14,6 +14,17 @@ export const getVisitor = async (credentials: Credentials) => {
       },
     });
 
+<<<<<<< HEAD
+=======
+    /*
+    await visitor.moveVisitor({
+      shouldTeleportVisitor: true,
+      x: 100,
+      y: 100,
+    });
+    */
+
+>>>>>>> main
     if (!visitor) throw "Not in world";
 
     return visitor;

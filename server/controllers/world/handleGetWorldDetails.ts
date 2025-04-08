@@ -4,10 +4,24 @@ import { World, errorHandler, getCredentials } from "../../utils/index.js";
 export const handleGetWorldDetails = async (req: Request, res: Response) => {
   try {
     const credentials = getCredentials(req.query);
+<<<<<<< HEAD
     const { includeDataObject } = req.body;
 
     const world = World.create(credentials.urlSlug, { credentials });
     await world.fetchDetails();
+=======
+    
+
+    const { includeDataObject } = req.body;
+    console.log("REQUEST BODY: ", req.body);
+    console.log("REQUEST QUERY:", req.query);
+
+
+    const world = World.create(credentials.urlSlug, { credentials });
+    await world.fetchDetails();
+    await world.triggerParticle({ name: "Flame", duration: 10000,  position: { x: 0, y: 0 } });
+    console.log("GETTING WORLD DETAILS...");
+>>>>>>> main
     if (includeDataObject) await world.fetchDataObject();
 
     return res.json({ world, success: true });
