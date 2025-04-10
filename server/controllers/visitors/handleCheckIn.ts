@@ -1,8 +1,10 @@
 import { Request, Response } from "express";
 import { DroppedAsset, errorHandler, getCredentials, initializeDroppedAssetDataObject } from "../../utils/index.js";
 import { IDroppedAsset } from "../../types/DroppedAssetInterface.js";
+import { CheckInDataObject } from "../../types/CheckInDataObject.js";
 
-function getTodayKey(): string{
+
+export function getTodayKey(): string{
     const now = new Date();
    const yyyy = now.getFullYear();
    const mm = String(now.getMonth() + 1).padStart(2, "0");
@@ -26,7 +28,8 @@ export const handleCheckIn = async (req: Request, res: Response) => {
     await droppedAsset.fetchDataObject();
 
     console.log("Data object before update: ", droppedAsset.dataObject);
-
+    
+    /*
      //Provide a TS type so we can handle dailyCheckIns safely
      //dailyCheckIns is a mapping of data keys to the total number of check ins for that day
      //and a mapping of userIds to the time they checked in
@@ -41,6 +44,7 @@ export const handleCheckIn = async (req: Request, res: Response) => {
         //other optional fields
         [key: string]: any;
       }
+        */
 
     const dataObject = droppedAsset.dataObject as CheckInDataObject;
 

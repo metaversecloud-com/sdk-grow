@@ -5,11 +5,13 @@ import path from "path";
 
 export default defineConfig({
   plugins: [react()],
+
   server: {
     port: 3001,
     proxy: {
       "/api": "http://localhost:3000/",
     },
+    allowedHosts:[`imp-relevant-thankfully.ngrok-free.app`],
   },
   build: {
     outDir: "./build",

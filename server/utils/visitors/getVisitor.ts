@@ -14,8 +14,6 @@ export const getVisitor = async (credentials: Credentials) => {
       },
     });
 
-<<<<<<< HEAD
-=======
     /*
     await visitor.moveVisitor({
       shouldTeleportVisitor: true,
@@ -24,7 +22,6 @@ export const getVisitor = async (credentials: Credentials) => {
     });
     */
 
->>>>>>> main
     if (!visitor) throw "Not in world";
 
     return visitor;

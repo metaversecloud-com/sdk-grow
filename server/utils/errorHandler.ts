@@ -28,11 +28,7 @@ export const errorHandler = ({
           reqQueryParams,
           reqBody: req?.body,
         },
-<<<<<<< HEAD
         error: JSON.stringify(error, Object.getOwnPropertyNames(error)),
-=======
-        error: JSON.stringify(error),
->>>>>>> main
       }),
     );
 
