@@ -58,6 +58,16 @@ const Home = () => {
         .finally(() => {
           setAreButtonsDisabled(false);
         });
+
+        backendAPI
+        .get("/check-in-info")
+        .then((response) => {
+          setTally(response.data.tally);
+        })
+        .catch((error) => setErrorMessage(dispatch, error))
+        .finally(() => {
+          setAreButtonsDisabled(false);
+        });
     }
   }, [hasInteractiveParams]);
 

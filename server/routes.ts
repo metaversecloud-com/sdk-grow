@@ -8,6 +8,7 @@ import {
   handleUpdateWorldDataObject,
   handleCheckIn,
   handleFireToast,
+  handleGetCheckInInfo,
 } from "./controllers/index.js";
 import { getVersion } from "./utils/getVersion.js";
 
@@ -45,6 +46,9 @@ router.get("/world", handleGetWorldDetails);
 router.put("/world/data-object", handleUpdateWorldDataObject);
 router.put("/world/fire-toast", handleFireToast);
 
+//checking in
 router.get("/check-in", handleCheckIn);
+router.get("/check-in-info", handleGetCheckInInfo);
+
 
 export default router;
