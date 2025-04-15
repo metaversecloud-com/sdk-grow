@@ -39,30 +39,43 @@ export const AdminReset = async (req: Request, res: Response) => {
 
     const overallTally = dataObject.overallTally;
 
-    //changing the goal
-    const updates = {
-        goal: newGoal,
-
-      };
     
     console.log("Fetched Dropped Asset Data Object: ", droppedAsset.dataObject);
 
     // If the application will make any updates to a dropped asset's data object we need to
     // first instantiate to ensure it's existence and define it's proper structure.
     // The same should be true for World, User, and Visitor data objects
+    if(newGoal >= 0){
+        //changing the goal
+        const updates = {
+            goal: newGoal,
+
+        };
+        await droppedAsset.updateDataObject(updates);
+        return res.json({
+            success: true,
+            message: "Updated goal successfully!",
+            goalToPop: newGoal,
+            droppedAsset,
+          });
+    }
+    else{
+        return res.json({
+            success: false,
+            message: "Unable to make goal a negative integer!",
+            goalToPop: dataObject.goal,
+            droppedAsset,
+          });
+    }
     
-    await droppedAsset.updateDataObject(updates);
+    /*
     console.log("Updated Dropped Asset Data Object: ", droppedAsset.dataObject);
 
     await droppedAsset.fetchDataObject();
     console.log("Fetched Dropped Asset Data Object AFTER UPDATE: ", droppedAsset.dataObject);
+    */
 
-    return res.json({
-        success: true,
-        message: "Checked in successfully!",
-        goalToPop: newGoal,
-        droppedAsset,
-      });
+  
 
    
 
