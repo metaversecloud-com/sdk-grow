@@ -16,12 +16,16 @@ export const ConfirmationModal = ({
 
   const [areButtonsDisabled, setAreButtonsDisabled] = useState(false);
 
-  const handleResetQuiz = () => {
+  const handleFullTallyReset = () => {
     setAreButtonsDisabled(true);
 
     backendAPI
-      .post(`/admin/reset`)
-      .then((response: { data: any }) => setGameState(dispatch, response.data))
+      .put(`/admin-reset-tally`)
+      .then((response: { data: any }) => 
+          
+        //setGameState(dispatch, response.data)
+        console.log("RESPONSE DATA FROM MODAL: ", response.data)
+      )
       .catch((error: any) => setErrorMessage(dispatch, error))
       .finally(() => {
         setAreButtonsDisabled(false);
@@ -44,7 +48,7 @@ export const ConfirmationModal = ({
           >
             No
           </button>
-          <button className="btn btn-danger-outline" onClick={() => handleResetQuiz()} disabled={areButtonsDisabled}>
+          <button className="btn btn-danger-outline" onClick={() => handleFullTallyReset()} disabled={areButtonsDisabled}>
             Yes
           </button>
         </div>

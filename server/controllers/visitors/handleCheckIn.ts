@@ -57,20 +57,45 @@ export const handleCheckIn = async (req: Request, res: Response) => {
         dataObject.dailyCheckIns = {};
     }
 
+    //goal with default value 100
+    if(!dataObject.goal){
+      dataObject.goal = 100;
+    }
+
+    if(!dataObject.overallTally){
+      dataObject.overallTally = 0;
+    }
+
     //checking if any user has checked in today
     const todayKey = getTodayKey();
     const todayEntry = dataObject.dailyCheckIns[todayKey] || {
       total: 0,
       users: {},
     };
+
     
     //if users is in date mapping (already checked in), return already checked in json message
     if (todayEntry.users[profileId]) {
+     
         // Already checked in
         return res.json({
           success: true,
           message: "You have already checked in today!",
           tally: todayEntry.total,
+          goalToPop: dataObject.goal,
+          droppedAsset,
+        });
+      }
+
+      //unable to check in - goal already met/balloon already popped 
+      if (dataObject.overallTally >= dataObject.goal) {
+        dataObject.isPopped = true;
+        return res.json({
+          success: true,
+          message: "You have already met the goal!",
+          tally: todayEntry.total,
+          goalToPop: dataObject.goal,
+          popped: true,
           droppedAsset,
         });
       }
@@ -79,10 +104,15 @@ export const handleCheckIn = async (req: Request, res: Response) => {
     const newTotal = todayEntry.total + 1;
     const checkInTime = new Date().toISOString();
 
+    //adding 1 to overall tally
+    const newOverallTally = dataObject.overallTally + 1;
+
     const updates = {
         [`dailyCheckIns.${todayKey}.total`]: newTotal,
         // Optionally store the timestamp for each user
         [`dailyCheckIns.${todayKey}.users.${profileId}`]: checkInTime,
+        overallTally: newOverallTally,
+        isPopped: newOverallTally >= dataObject.goal,
       };
     
     console.log("Fetched Dropped Asset Data Object: ", droppedAsset.dataObject);

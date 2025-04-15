@@ -31,6 +31,18 @@ import {CheckInDataObject} from "../../types/CheckInDataObject.js";
         dataObject.dailyCheckIns = {};
     }
 
+    if(!dataObject.goal){
+      dataObject.goal = 100;
+    }
+
+    if(!dataObject.overallTally){
+      dataObject.overallTally = 0;
+    }
+
+    const overallTally = dataObject.overallTally;
+
+    const goal = dataObject.goal;
+
     //checking if any user has checked in today
     const todayKey = getTodayKey();
     const todayEntry = dataObject.dailyCheckIns[todayKey] || {
@@ -51,6 +63,8 @@ import {CheckInDataObject} from "../../types/CheckInDataObject.js";
         success: true,
         message: "Received check in info successfully!",
         tally: receivedTotal,
+        goalToPop: goal,
+        overallTally: overallTally,
         droppedAsset,
       });
 

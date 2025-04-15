@@ -10,6 +10,8 @@ import {
   handleFireToast,
   handleGetCheckInInfo,
   handleParticleEffects,
+  AdminReset,
+  AdminResetTally,
 } from "./controllers/index.js";
 import { getVersion } from "./utils/getVersion.js";
 
@@ -53,6 +55,12 @@ router.get("/check-in-info", handleGetCheckInInfo);
 
 //particle effects
 router.post("/particle-effects", handleParticleEffects);
+
+//resetting goal for admin while keeping overall tally
+router.put("/admin-reset", AdminReset); 
+
+//resetting tally for admin while maintaining goal
+router.put("/admin-reset-tally", AdminResetTally);
 
 
 export default router;
