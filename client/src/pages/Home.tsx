@@ -26,7 +26,12 @@ const Home = () => {
   const [admin, SetIsAdmin] = useState(false);
 
   const [tally, setTally] = useState(0);
+  const[overallTally,setOverallTally] = useState(0);
   const[position, setPosition] = useState({ x: 0, y: 0 });
+
+  const[pump_number, setPumpNumber] = useState(0);
+
+  const[goal, setGoal] = useState(0);
 
   useEffect(() => {
     if (hasInteractiveParams) {
@@ -64,6 +69,14 @@ const Home = () => {
         .get("/check-in-info")
         .then((response) => {
           setTally(response.data.tally);
+          console.log("TALLY: ", response.data.tally);
+          console.log("GOAL TO POP: ", response.data.goalToPop);
+          setGoal(response.data.goalToPop);
+          setOverallTally(response.data.overallTally);
+          const pump_stage = getPumpStage(response.data.overallTally, response.data.goalToPop);
+          setPumpNumber(pump_stage);
+          console.log("Pump stage: ", pump_stage);
+          //setPumpNumber(getPumpStage())
           console.log("Asset info: ", response.data.droppedAsset);
           setPosition(response.data.droppedAsset.position);
         })
@@ -74,6 +87,7 @@ const Home = () => {
     }
   }, [hasInteractiveParams]);
 
+  /*
   const handleGetDroppedAsset = async () => {
     setAreButtonsDisabled(true);
     //setDroppedAsset(defaultDroppedAsset);
@@ -91,6 +105,20 @@ const Home = () => {
         setAreButtonsDisabled(false);
       });
   };
+  */
+
+  //gets which stage the pump is at
+  const getPumpStage = (tally:number, goal:number):number => {
+    console.log("TALLY AND GOAL: ", tally, goal);
+    //20 pictures
+    const stages = 20;
+    if(!goal || tally <= 0){
+      return 0;
+    }
+    const ratio = tally/goal;
+    const curr_stage = Math.min(stages, Math.floor(ratio * stages));
+    return curr_stage;
+  }
 
   const handleCheckIn = async () => {
     setAreButtonsDisabled(true);
@@ -151,12 +179,13 @@ const Home = () => {
         <h1 className="h2">Grow App</h1>
 
         <div className="flex flex-col w-full ">
-          <img className="w-96 h-96 object-cover rounded-2xl my-4" alt="Pump" src="../../public/Pump0.png" />
+          <img className="w-96 h-96 object-cover rounded-2xl my-4" alt="Pump" src={`../../public/pumps_balloons/Pump-${pump_number}.png` }/>
           {admin && <AdminIconButton showSettings={showSettings} setShowSettings={setShowSettings} />}
         </div>
 
-        <div className="flex flex-col w-full ">Tally: {tally}</div>
-
+        <div className="flex flex-col w-full ">Overall Tally: {overallTally}</div>
+        <div className="flex flex-col w-full ">Daily Tally: {tally}</div>
+        <div className="flex flex-col w-full ">Goal: {goal}</div>
         <PageFooter>
           <button className="btn" disabled={areButtonsDisabled} onClick={handleCheckIn}>
             Check In
