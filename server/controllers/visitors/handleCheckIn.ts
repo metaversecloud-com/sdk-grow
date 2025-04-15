@@ -23,6 +23,7 @@ export const handleCheckIn = async (req: Request, res: Response) => {
     
     const droppedAsset = await DroppedAsset.get(assetId, urlSlug, { credentials });
     console.log("Dropped Asset: ", droppedAsset);
+    console.log("Dropped asset position: ", droppedAsset.position);
 
     
     await droppedAsset.fetchDataObject();

@@ -26,6 +26,7 @@ const Home = () => {
   const [admin, SetIsAdmin] = useState(false);
 
   const [tally, setTally] = useState(0);
+  const[position, setPosition] = useState({ x: 0, y: 0 });
 
   useEffect(() => {
     if (hasInteractiveParams) {
@@ -63,6 +64,8 @@ const Home = () => {
         .get("/check-in-info")
         .then((response) => {
           setTally(response.data.tally);
+          console.log("Asset info: ", response.data.droppedAsset);
+          setPosition(response.data.droppedAsset.position);
         })
         .catch((error) => setErrorMessage(dispatch, error))
         .finally(() => {
@@ -80,6 +83,8 @@ const Home = () => {
       .then((response) => {
         console.log("Response: ", response);
         setDroppedAsset(response.data.droppedAsset);
+        //setting position to use for particle effects
+        
       })
       .catch((error) => setErrorMessage(dispatch, error))
       .finally(() => {
@@ -96,11 +101,24 @@ const Home = () => {
       .then((response) => {
         console.log("Response FOR CHECKING IN: ", response);
         setTally(response.data.tally);
-      })
-      .catch((error) => setErrorMessage(dispatch, error))
-      .finally(() => {
-        setAreButtonsDisabled(false);
+        if(response.status = 200){
+            console.log("CHECK IN SUCCESS");
+            console.log("POSITION: ", position.x, position.y);
+          backendAPI.post("/particle-effects", {includeDataObject: true}, {
+        params: {
+          //getting position to fire particle effects - couldn't find in devdocs getting position not in droppedasset
+          params: { x: position.x, y: position.y }
+        },
+        })
+    .then((response) => {
+    
       });
+            }
+          })
+        .catch((error) => setErrorMessage(dispatch, error))
+        .finally(() => {
+          setAreButtonsDisabled(false);
+        });
   };
 
   const handleWorldAsset = async () => {

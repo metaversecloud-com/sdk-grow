@@ -9,6 +9,7 @@ import {
   handleCheckIn,
   handleFireToast,
   handleGetCheckInInfo,
+  handleParticleEffects,
 } from "./controllers/index.js";
 import { getVersion } from "./utils/getVersion.js";
 
@@ -49,6 +50,9 @@ router.put("/world/fire-toast", handleFireToast);
 //checking in
 router.get("/check-in", handleCheckIn);
 router.get("/check-in-info", handleGetCheckInInfo);
+
+//particle effects
+router.post("/particle-effects", handleParticleEffects);
 
 
 export default router;
