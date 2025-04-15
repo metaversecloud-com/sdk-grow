@@ -17,10 +17,11 @@ export const AdminView = () => {
   const [goal, setGoal] = useState(100);
   const [areButtonsDisabled, setAreButtonsDisabled] = useState(false);
   const [tally, setTally] = useState(0);
+  const [overallTally, setOverallTally] = useState(0);
 
   function handleToggleShowConfirmationModal() {
     setShowConfirmationModal(!showConfirmationModal);
-    
+
   }
 
   const handleReset = async () => {
@@ -48,6 +49,7 @@ export const AdminView = () => {
       console.log("Response DATA: ", response.data);
       console.log("RESPONSE TALLY: ", response.data.tally);
       setTally(response.data.tally);
+      setOverallTally(response.data.overallTally);
       console.log("Asset info: ", response.data.droppedAsset);
       setGoal(response.data.goalToPop);
       console.log("GOAL FROM JSON: ", response.data.goalToPop);
@@ -66,8 +68,10 @@ export const AdminView = () => {
   <h1 className="text-2xl font-bold mb-4">Admin View</h1>
 
   <div className="mb-4">
-    <h2 className="text-lg">Current Tally: <span className="font-medium">{tally}</span></h2>
+    <h2 className="text-lg">Current Tally: <span className="font-medium">{overallTally}</span></h2>
+    <h2 className="text-lg">Daily Tally: <span className="font-medium">{tally}</span></h2>
     <h2 className="text-lg">Goal: <span className="font-medium">{goal}</span></h2>
+
   </div>
 
   <div className="mb-4">
