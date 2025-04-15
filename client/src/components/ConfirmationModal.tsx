@@ -36,7 +36,6 @@ export const ConfirmationModal = ({
   return (
     <div className="modal-container">
       <div className="modal">
-        <h4>Reset?</h4>
         <h4>Reset Tally??</h4>
         <p>All player data will be erased.</p>
         <div className="actions">
