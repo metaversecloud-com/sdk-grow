@@ -5,35 +5,22 @@ import { IDroppedAsset } from "../../types/DroppedAssetInterface.js";
 export const handleGetDroppedAsset = async (req: Request, res: Response) => {
   try {
     const credentials = getCredentials(req.query);
-<<<<<<< HEAD
-    const { assetId, urlSlug } = credentials;
-    const droppedAsset = await DroppedAsset.get(assetId, urlSlug, { credentials });
-=======
     console.log("Credentials: ", credentials);
     const { assetId, urlSlug } = credentials;
-    
+
     const droppedAsset = await DroppedAsset.get(assetId, urlSlug, { credentials });
     console.log("Dropped Asset: ", droppedAsset);
 
     const keyAsset = await droppedAsset.setDataObject({
-     
       keyAssetId: droppedAsset.id,
-
-    })
-
-
->>>>>>> main
+    });
 
     // If the application will make any updates to a dropped asset's data object we need to
     // first instantiate to ensure it's existence and define it's proper structure.
     // The same should be true for World, User, and Visitor data objects
     await initializeDroppedAssetDataObject(droppedAsset as IDroppedAsset);
 
-<<<<<<< HEAD
-    return res.json({ droppedAsset, success: true });
-=======
-    return res.json({ droppedAsset, "KEYASSET":keyAsset, success: true });
->>>>>>> main
+    return res.json({ droppedAsset, KEYASSET: keyAsset, success: true });
   } catch (error) {
     return errorHandler({
       error,

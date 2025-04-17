@@ -1,8 +1,12 @@
 import { Request, Response } from "express";
-import { DroppedAsset, errorHandler, getCredentials, initializeDroppedAssetDataObject } from "../../utils/index.js";
+import { DroppedAsset,World, errorHandler, getCredentials, initializeDroppedAssetDataObject } from "../../utils/index.js";
 import { IDroppedAsset } from "../../types/DroppedAssetInterface.js";
+import { CheckInDataObject } from "../../types/CheckInDataObject.js";
 
-function getTodayKey(): string{
+
+
+
+export function getTodayKey(): string{
     const now = new Date();
    const yyyy = now.getFullYear();
    const mm = String(now.getMonth() + 1).padStart(2, "0");
@@ -19,28 +23,18 @@ export const handleCheckIn = async (req: Request, res: Response) => {
     console.log("Credentials: ", credentials);
     const { assetId, urlSlug } = credentials;
     
+    //getting world to fire toast message
+    const world = World.create(credentials.urlSlug, { credentials });
+
     const droppedAsset = await DroppedAsset.get(assetId, urlSlug, { credentials });
     console.log("Dropped Asset: ", droppedAsset);
+    console.log("Dropped asset position: ", droppedAsset.position);
 
     
     await droppedAsset.fetchDataObject();
 
     console.log("Data object before update: ", droppedAsset.dataObject);
-
-     //Provide a TS type so we can handle dailyCheckIns safely
-     //dailyCheckIns is a mapping of data keys to the total number of check ins for that day
-     //and a mapping of userIds to the time they checked in
-      interface CheckInDataObject {
-        dailyCheckIns?: Record<
-          string, // date key: "YYYY-MM-DD"
-          {
-            total: number;
-            users: Record<string, string | boolean>; // userId -> checkInTime or boolean
-          }
-        >;
-        //other optional fields
-        [key: string]: any;
-      }
+    
 
     const dataObject = droppedAsset.dataObject as CheckInDataObject;
 
@@ -52,20 +46,59 @@ export const handleCheckIn = async (req: Request, res: Response) => {
         dataObject.dailyCheckIns = {};
     }
 
+    //goal with default value 100
+    if(!dataObject.goal){
+      dataObject.goal = 100;
+    }
+
+    if(!dataObject.overallTally){
+      dataObject.overallTally = 0;
+    }
+
     //checking if any user has checked in today
     const todayKey = getTodayKey();
     const todayEntry = dataObject.dailyCheckIns[todayKey] || {
       total: 0,
       users: {},
     };
+
     
     //if users is in date mapping (already checked in), return already checked in json message
     if (todayEntry.users[profileId]) {
+
+      await world.fireToast({
+        title: "Already Checked In",
+        text: "You are already checked in. Please come back tomorrow!",
+      });
+
         // Already checked in
         return res.json({
           success: true,
           message: "You have already checked in today!",
           tally: todayEntry.total,
+          overallTally: dataObject.overallTally,
+          goalToPop: dataObject.goal,
+          droppedAsset,
+        });
+      }
+
+      //unable to check in - goal already met/balloon already popped 
+      if (dataObject.overallTally >= dataObject.goal) {
+        dataObject.isPopped = true;
+
+        //firing toast for meeting goal
+        await world.fireToast({
+          title: "Already met goal",
+          text: "You have already met the goal!",
+        });
+
+        return res.json({
+          success: true,
+          message: "You have already met the goal!",
+          tally: todayEntry.total,
+          overallTally: dataObject.overallTally,
+          goalToPop: dataObject.goal,
+          popped: true,
           droppedAsset,
         });
       }
@@ -74,10 +107,15 @@ export const handleCheckIn = async (req: Request, res: Response) => {
     const newTotal = todayEntry.total + 1;
     const checkInTime = new Date().toISOString();
 
+    //adding 1 to overall tally
+    const newOverallTally = dataObject.overallTally + 1;
+
     const updates = {
         [`dailyCheckIns.${todayKey}.total`]: newTotal,
         // Optionally store the timestamp for each user
         [`dailyCheckIns.${todayKey}.users.${profileId}`]: checkInTime,
+        overallTally: newOverallTally,
+        isPopped: newOverallTally >= dataObject.goal,
       };
     
     console.log("Fetched Dropped Asset Data Object: ", droppedAsset.dataObject);
@@ -92,10 +130,16 @@ export const handleCheckIn = async (req: Request, res: Response) => {
     await droppedAsset.fetchDataObject();
     console.log("Fetched Dropped Asset Data Object AFTER UPDATE: ", droppedAsset.dataObject);
 
+    await world.fireToast({
+      title: "Successfully Checked In",
+      text: "You have successfully checked in! Please come back tomorrow!",
+    });
+
     return res.json({
         success: true,
         message: "Checked in successfully!",
         tally: newTotal,
+        overallTally: newOverallTally,
         droppedAsset,
       });
 

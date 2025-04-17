@@ -9,23 +9,27 @@ import { backendAPI, setErrorMessage, setGameState } from "@/utils";
 
 export const ConfirmationModal = ({
   handleToggleShowConfirmationModal,
+  handleConfirm, //need this to pass tally data back to admin view
+
 }: {
   handleToggleShowConfirmationModal: () => void;
+  handleConfirm: (responseData: any) => void;
 }) => {
   const dispatch = useContext(GlobalDispatchContext);
 
   const [areButtonsDisabled, setAreButtonsDisabled] = useState(false);
 
-<<<<<<< HEAD
-  const handleReset = () => {
-=======
-  const handleResetQuiz = () => {
->>>>>>> main
+  const handleFullTallyReset = () => {
     setAreButtonsDisabled(true);
 
     backendAPI
-      .post(`/admin/reset`)
-      .then((response: { data: any }) => setGameState(dispatch, response.data))
+      .put(`/admin-reset-tally`)
+      .then((response: { data: any }) => {
+          
+        //setGameState(dispatch, response.data)
+        console.log("RESPONSE DATA FROM MODAL: ", response.data);
+        handleConfirm(response.data); //pass the data back to the admin view
+  })
       .catch((error: any) => setErrorMessage(dispatch, error))
       .finally(() => {
         setAreButtonsDisabled(false);
@@ -36,11 +40,7 @@ export const ConfirmationModal = ({
   return (
     <div className="modal-container">
       <div className="modal">
-<<<<<<< HEAD
-        <h4>Reset?</h4>
-=======
-        <h4>Reset Quiz?</h4>
->>>>>>> main
+        <h4>Reset Tally??</h4>
         <p>All player data will be erased.</p>
         <div className="actions">
           <button
@@ -51,11 +51,7 @@ export const ConfirmationModal = ({
           >
             No
           </button>
-<<<<<<< HEAD
-          <button className="btn btn-danger-outline" onClick={() => handleReset()} disabled={areButtonsDisabled}>
-=======
-          <button className="btn btn-danger-outline" onClick={() => handleResetQuiz()} disabled={areButtonsDisabled}>
->>>>>>> main
+          <button className="btn btn-danger-outline" onClick={() => handleFullTallyReset()} disabled={areButtonsDisabled}>
             Yes
           </button>
         </div>

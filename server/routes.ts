@@ -6,12 +6,13 @@ import {
   handleRemoveDroppedAssetsByUniqueName,
   handleGetWorldDetails,
   handleUpdateWorldDataObject,
-<<<<<<< HEAD
-  handleFireToast,
-=======
   handleCheckIn,
-
->>>>>>> main
+  handleFireToast,
+  handleGetCheckInInfo,
+  handleParticleEffects,
+  AdminReset,
+  AdminResetTally,
+  handleAssetImageLayer
 } from "./controllers/index.js";
 import { getVersion } from "./utils/getVersion.js";
 
@@ -47,15 +48,23 @@ router.get("/visitor", handleGetVisitor);
 // World
 router.get("/world", handleGetWorldDetails);
 router.put("/world/data-object", handleUpdateWorldDataObject);
-<<<<<<< HEAD
 router.put("/world/fire-toast", handleFireToast);
 
-export default router;
-=======
-
-
-// Check In
+//checking in
 router.get("/check-in", handleCheckIn);
+router.get("/check-in-info", handleGetCheckInInfo);
+
+//particle effects
+router.post("/particle-effects", handleParticleEffects);
+
+//resetting goal for admin while keeping overall tally
+router.put("/admin-reset", AdminReset); 
+
+//resetting tally for admin while maintaining goal
+router.put("/admin-reset-tally", AdminResetTally);
+
+router.post("/change-image", handleAssetImageLayer);
+
+
 
 export default router;
->>>>>>> main
