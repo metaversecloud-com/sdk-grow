@@ -31,6 +31,7 @@ export const AdminView = () => {
   //handleResetConfirm resets tally and overallTally
   const handleResetConfirm = (data:any) => {
     setTally(0);
+    console.log("CURRENT OVERALLY TALLY: ", overallTally);
     setOverallTally(data.overallTally);
   }
   //goes back to home page
