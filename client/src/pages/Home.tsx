@@ -116,7 +116,7 @@ const Home = () => {
       return 0;
     }
     const ratio = tally/goal;
-    const curr_stage = Math.min(stages, Math.floor(ratio * stages));
+    const curr_stage = Math.min(stages - 1, Math.floor(ratio * stages));
     return curr_stage;
   }
 
@@ -128,7 +128,10 @@ const Home = () => {
       .get("/check-in")
       .then((response) => {
         console.log("Response FOR CHECKING IN: ", response);
+
+        //setting tally and overall tally
         setTally(response.data.tally);
+        setOverallTally(response.data.overallTally);
         if(response.status = 200){
             console.log("CHECK IN SUCCESS");
             console.log("POSITION: ", position.x, position.y);
@@ -179,7 +182,7 @@ const Home = () => {
         <h1 className="h2">Grow App</h1>
 
         <div className="flex flex-col w-full ">
-          <img className="w-96 h-96 object-cover rounded-2xl my-4" alt="Pump" src={`../../public/pumps_balloons/Pump-${pump_number}.png` }/>
+          <img className="w-96 h-96 object-cover rounded-2xl my-4" alt="Pump" src={`../../pumps_balloons/Pump-${pump_number}.png` }/>
           {admin && <AdminIconButton showSettings={showSettings} setShowSettings={setShowSettings} />}
         </div>
 

@@ -10,6 +10,9 @@ import { GlobalDispatchContext, GlobalStateContext } from "@/context/GlobalConte
 // utils
 import { backendAPI, setErrorMessage, setGameState } from "@/utils";
 
+//navigation
+import { useNavigate } from "react-router-dom";
+
 
 export const AdminView = () => {
   const dispatch = useContext(GlobalDispatchContext);
@@ -18,12 +21,22 @@ export const AdminView = () => {
   const [areButtonsDisabled, setAreButtonsDisabled] = useState(false);
   const [tally, setTally] = useState(0);
   const [overallTally, setOverallTally] = useState(0);
+  const navigate = useNavigate();
+
 
   function handleToggleShowConfirmationModal() {
     setShowConfirmationModal(!showConfirmationModal);
 
   }
-
+  //handleResetConfirm resets tally and overallTally
+  const handleResetConfirm = (data:any) => {
+    setTally(0);
+    setOverallTally(data.overallTally);
+  }
+  //goes back to home page
+  const handleRedirect = () => {
+    navigate("/");
+  };
   const handleReset = async () => {
     console.log("CURRENT GOAL: ", goal);
     //setDroppedAsset(defaultDroppedAsset);
@@ -94,6 +107,13 @@ export const AdminView = () => {
     Set Goal!
   </button>
 
+  <button
+    className="back-button bg-gray-700 text-white px-4 py-2 ml-2 rounded hover:bg-blue-700"
+    onClick={handleRedirect}
+  >
+    Back
+  </button>
+
   <PageFooter>
         <button className="btn btn-danger" onClick={() => handleToggleShowConfirmationModal()}>
           Reset
@@ -104,7 +124,8 @@ export const AdminView = () => {
 
 
       {showConfirmationModal && (
-        <ConfirmationModal handleToggleShowConfirmationModal={handleToggleShowConfirmationModal} />
+        <ConfirmationModal handleToggleShowConfirmationModal={handleToggleShowConfirmationModal} 
+        handleConfirm = {handleResetConfirm}/>
       )}
     </div>
 

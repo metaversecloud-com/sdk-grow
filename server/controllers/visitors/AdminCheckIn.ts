@@ -38,6 +38,7 @@ export const AdminReset = async (req: Request, res: Response) => {
     }
 
     const overallTally = dataObject.overallTally;
+    const isPopped = overallTally >= newGoal;
 
     
     console.log("Fetched Dropped Asset Data Object: ", droppedAsset.dataObject);
@@ -56,6 +57,7 @@ export const AdminReset = async (req: Request, res: Response) => {
             success: true,
             message: "Updated goal successfully!",
             goalToPop: newGoal,
+            isPopped: isPopped,
             droppedAsset,
           });
     }
@@ -130,6 +132,7 @@ export const AdminResetTally = async (req: Request, res: Response) => {
       
       await droppedAsset.updateDataObject(updates);
       console.log("Updated Dropped Asset Data Object: ", droppedAsset.dataObject);
+      const overallTally = dataObject.overallTally;
   
       await droppedAsset.fetchDataObject();
       console.log("Fetched Dropped Asset Data Object AFTER UPDATE: ", droppedAsset.dataObject);
@@ -138,6 +141,8 @@ export const AdminResetTally = async (req: Request, res: Response) => {
           success: true,
           message: "RESET TALLY SUCCESSFULLY!",
           goalToPop: newGoal,
+          isPopped: false,
+          overallTally: overallTally,
           droppedAsset,
         });
   

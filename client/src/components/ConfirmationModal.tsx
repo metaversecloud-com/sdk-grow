@@ -9,8 +9,11 @@ import { backendAPI, setErrorMessage, setGameState } from "@/utils";
 
 export const ConfirmationModal = ({
   handleToggleShowConfirmationModal,
+  handleConfirm, //need this to pass tally data back to admin view
+
 }: {
   handleToggleShowConfirmationModal: () => void;
+  handleConfirm: (responseData: any) => void;
 }) => {
   const dispatch = useContext(GlobalDispatchContext);
 
@@ -21,11 +24,12 @@ export const ConfirmationModal = ({
 
     backendAPI
       .put(`/admin-reset-tally`)
-      .then((response: { data: any }) => 
+      .then((response: { data: any }) => {
           
         //setGameState(dispatch, response.data)
-        console.log("RESPONSE DATA FROM MODAL: ", response.data)
-      )
+        console.log("RESPONSE DATA FROM MODAL: ", response.data);
+        handleConfirm(response.data); //pass the data back to the admin view
+  })
       .catch((error: any) => setErrorMessage(dispatch, error))
       .finally(() => {
         setAreButtonsDisabled(false);

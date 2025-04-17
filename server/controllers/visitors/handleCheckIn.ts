@@ -1,7 +1,9 @@
 import { Request, Response } from "express";
-import { DroppedAsset, errorHandler, getCredentials, initializeDroppedAssetDataObject } from "../../utils/index.js";
+import { DroppedAsset,World, errorHandler, getCredentials, initializeDroppedAssetDataObject } from "../../utils/index.js";
 import { IDroppedAsset } from "../../types/DroppedAssetInterface.js";
 import { CheckInDataObject } from "../../types/CheckInDataObject.js";
+
+
 
 
 export function getTodayKey(): string{
@@ -21,6 +23,9 @@ export const handleCheckIn = async (req: Request, res: Response) => {
     console.log("Credentials: ", credentials);
     const { assetId, urlSlug } = credentials;
     
+    //getting world to fire toast message
+    const world = World.create(credentials.urlSlug, { credentials });
+
     const droppedAsset = await DroppedAsset.get(assetId, urlSlug, { credentials });
     console.log("Dropped Asset: ", droppedAsset);
     console.log("Dropped asset position: ", droppedAsset.position);
@@ -30,22 +35,6 @@ export const handleCheckIn = async (req: Request, res: Response) => {
 
     console.log("Data object before update: ", droppedAsset.dataObject);
     
-    /*
-     //Provide a TS type so we can handle dailyCheckIns safely
-     //dailyCheckIns is a mapping of data keys to the total number of check ins for that day
-     //and a mapping of userIds to the time they checked in
-      interface CheckInDataObject {
-        dailyCheckIns?: Record<
-          string, // date key: "YYYY-MM-DD"
-          {
-            total: number;
-            users: Record<string, string | boolean>; // userId -> checkInTime or boolean
-          }
-        >;
-        //other optional fields
-        [key: string]: any;
-      }
-        */
 
     const dataObject = droppedAsset.dataObject as CheckInDataObject;
 
@@ -76,12 +65,18 @@ export const handleCheckIn = async (req: Request, res: Response) => {
     
     //if users is in date mapping (already checked in), return already checked in json message
     if (todayEntry.users[profileId]) {
-     
+
+      await world.fireToast({
+        title: "Already Checked In",
+        text: "You are already checked in. Please come back tomorrow!",
+      });
+
         // Already checked in
         return res.json({
           success: true,
           message: "You have already checked in today!",
           tally: todayEntry.total,
+          overallTally: dataObject.overallTally,
           goalToPop: dataObject.goal,
           droppedAsset,
         });
@@ -90,10 +85,18 @@ export const handleCheckIn = async (req: Request, res: Response) => {
       //unable to check in - goal already met/balloon already popped 
       if (dataObject.overallTally >= dataObject.goal) {
         dataObject.isPopped = true;
+
+        //firing toast for meeting goal
+        await world.fireToast({
+          title: "Already met goal",
+          text: "You have already met the goal!",
+        });
+
         return res.json({
           success: true,
           message: "You have already met the goal!",
           tally: todayEntry.total,
+          overallTally: dataObject.overallTally,
           goalToPop: dataObject.goal,
           popped: true,
           droppedAsset,
@@ -127,10 +130,16 @@ export const handleCheckIn = async (req: Request, res: Response) => {
     await droppedAsset.fetchDataObject();
     console.log("Fetched Dropped Asset Data Object AFTER UPDATE: ", droppedAsset.dataObject);
 
+    await world.fireToast({
+      title: "Successfully Checked In",
+      text: "You have successfully checked in! Please come back tomorrow!",
+    });
+
     return res.json({
         success: true,
         message: "Checked in successfully!",
         tally: newTotal,
+        overallTally: newOverallTally,
         droppedAsset,
       });
 

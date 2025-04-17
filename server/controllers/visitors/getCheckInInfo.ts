@@ -42,12 +42,15 @@ import {CheckInDataObject} from "../../types/CheckInDataObject.js";
     const overallTally = dataObject.overallTally;
 
     const goal = dataObject.goal;
+    
+    const isPopped = overallTally >= goal;
 
     //checking if any user has checked in today
     const todayKey = getTodayKey();
     const todayEntry = dataObject.dailyCheckIns[todayKey] || {
       total: 0,
       users: {},
+      isPopped: isPopped,
     };
 
     const receivedTotal = todayEntry.total;
@@ -65,6 +68,7 @@ import {CheckInDataObject} from "../../types/CheckInDataObject.js";
         tally: receivedTotal,
         goalToPop: goal,
         overallTally: overallTally,
+        isPopped: isPopped,
         droppedAsset,
       });
 

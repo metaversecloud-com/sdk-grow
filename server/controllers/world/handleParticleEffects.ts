@@ -1,6 +1,8 @@
 import { Request, Response } from "express";
 import { World, errorHandler, getCredentials } from "../../utils/index.js";
 
+
+//would it make more sense for me to do it in the check in route and get x and y position from that request?
 export const handleParticleEffects = async (req: Request, res: Response) => {
   try {
     const credentials = getCredentials(req.query);
@@ -15,9 +17,12 @@ export const handleParticleEffects = async (req: Request, res: Response) => {
 
     console.log("Received position from client:", { x, y });
 
+    //do I need to create a world every time I call world-related functions?
     const world = World.create(credentials.urlSlug, { credentials });
+   
     await world.fetchDetails();
-    await world.triggerParticle({ name: "Flame", duration: 10000, position: { x: x, y: y } });
+    //duration is in seconds
+    await world.triggerParticle({ name: "Flame", duration: 3, position: { x: x, y: y } });
     if (includeDataObject) await world.fetchDataObject();
 
     return res.json({ world, success: true });

@@ -13,6 +13,7 @@ export const handleGetWorldDetails = async (req: Request, res: Response) => {
     await world.fetchDetails();
     //await world.triggerParticle({ name: "Flame", duration: 10000, position: { x: 0, y: 0 } });
     console.log("GETTING WORLD DETAILS...");
+    //getting data object?
     if (includeDataObject) await world.fetchDataObject();
 
     return res.json({ world, success: true });
