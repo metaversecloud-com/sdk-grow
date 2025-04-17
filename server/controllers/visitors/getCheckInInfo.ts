@@ -9,17 +9,17 @@ import {CheckInDataObject} from "../../types/CheckInDataObject.js";
   try {
     const credentials = getCredentials(req.query);
     const profileId = credentials.profileId;
-    console.log("Profile ID: ", profileId);
-    console.log("Credentials: ", credentials);
+    //console.log("Profile ID: ", profileId);
+    //console.log("Credentials: ", credentials);
     const { assetId, urlSlug } = credentials;
     
     const droppedAsset = await DroppedAsset.get(assetId, urlSlug, { credentials });
-    console.log("Dropped Asset: ", droppedAsset);
+    //console.log("Dropped Asset: ", droppedAsset);
 
     
     await droppedAsset.fetchDataObject();
 
-    console.log("Data object before update: ", droppedAsset.dataObject);
+    //console.log("Data object before update: ", droppedAsset.dataObject);
 
     const dataObject = droppedAsset.dataObject as CheckInDataObject;
 
@@ -56,7 +56,8 @@ import {CheckInDataObject} from "../../types/CheckInDataObject.js";
     const receivedTotal = todayEntry.total;
     
     //checking user in with current date
-    console.log("Fetched Dropped Asset Data Object: ", droppedAsset.dataObject);
+
+    //console.log("Fetched Dropped Asset Data Object: ", droppedAsset.dataObject);
 
     // If the application will make any updates to a dropped asset's data object we need to
     // first instantiate to ensure it's existence and define it's proper structure.

@@ -12,6 +12,7 @@ import {
   handleParticleEffects,
   AdminReset,
   AdminResetTally,
+  handleAssetImageLayer
 } from "./controllers/index.js";
 import { getVersion } from "./utils/getVersion.js";
 
@@ -61,6 +62,8 @@ router.put("/admin-reset", AdminReset);
 
 //resetting tally for admin while maintaining goal
 router.put("/admin-reset-tally", AdminResetTally);
+
+router.post("/change-image", handleAssetImageLayer);
 
 
 

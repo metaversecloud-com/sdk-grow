@@ -75,7 +75,7 @@ const Home = () => {
           setOverallTally(response.data.overallTally);
           const pump_stage = getPumpStage(response.data.overallTally, response.data.goalToPop);
           setPumpNumber(pump_stage);
-          console.log("Pump stage: ", pump_stage);
+
           //setPumpNumber(getPumpStage())
           console.log("Asset info: ", response.data.droppedAsset);
           setPosition(response.data.droppedAsset.position);
@@ -84,8 +84,20 @@ const Home = () => {
         .finally(() => {
           setAreButtonsDisabled(false);
         });
+
+           
+
+        
     }
   }, [hasInteractiveParams]);
+//whenever pump number changes and has interactive params, send to backend to change asset image
+  useEffect(() => {
+    
+    if (pump_number !== null && hasInteractiveParams) {
+      backendAPI.post("/change-image", { stage: pump_number });
+      console.log("Pump stage SENT TO BACKEND:", pump_number);
+    }
+  },[pump_number, hasInteractiveParams]);
 
   /*
   const handleGetDroppedAsset = async () => {
