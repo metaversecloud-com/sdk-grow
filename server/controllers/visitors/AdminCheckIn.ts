@@ -132,17 +132,19 @@ export const AdminResetTally = async (req: Request, res: Response) => {
       
       await droppedAsset.updateDataObject(updates);
       console.log("Updated Dropped Asset Data Object: ", droppedAsset.dataObject);
-      const overallTally = dataObject.overallTally;
+      
+      const newOverallTally = (droppedAsset.dataObject as CheckInDataObject).overallTally;
   
       await droppedAsset.fetchDataObject();
       console.log("Fetched Dropped Asset Data Object AFTER UPDATE: ", droppedAsset.dataObject);
+
   
       return res.json({
           success: true,
           message: "RESET TALLY SUCCESSFULLY!",
           goalToPop: newGoal,
           isPopped: false,
-          overallTally: overallTally,
+          overallTally:newOverallTally,
           droppedAsset,
         });
   
