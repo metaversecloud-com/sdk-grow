@@ -16,10 +16,9 @@ export const handleAssetImageLayer = async (req: Request, res: Response) => {
 
     const droppedAsset = await DroppedAsset.get(assetId, urlSlug, { credentials });
     
-    
     console.log("Dropped Asset: ", droppedAsset);
 
-    const balloonImage = `https://calebhollander.github.io/Balloon-Assets/Pump-${stage}.png`;
+    const balloonImage = `https://sdk-grow.s3.us-east-1.amazonaws.com/Pump-${stage}.png`;
 
     /*
     await droppedAsset.updateAsset({
@@ -34,20 +33,13 @@ export const handleAssetImageLayer = async (req: Request, res: Response) => {
     })
     */
 
-    const updateParams: any = {
-      assetName: `Balloon_Pump_Stage_${stage}`,
-      creatorTags: {},
-      isPublic: true,
-      tagJson: "{}",
-      topLayerURL: balloonImage,
-      shouldUploadImages: false,
-    };
-
-
     // If the application will make any updates to a dropped asset's data object we need to
     // first instantiate to ensure it's existence and define it's proper structure.
     // The same should be true for World, User, and Visitor data objects
     await initializeDroppedAssetDataObject(droppedAsset as IDroppedAsset);
+
+    await droppedAsset.updateWebImageLayers("",balloonImage);
+
 
     return res.json({ droppedAsset, success: true, message: "Updated asset image layer successfully!" });
   } catch (error) {

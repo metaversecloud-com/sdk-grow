@@ -65,6 +65,8 @@ const Home = () => {
           setAreButtonsDisabled(false);
         });
 
+
+
         backendAPI
         .get("/check-in-info")
         .then((response) => {

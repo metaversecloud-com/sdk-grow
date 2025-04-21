@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
-import { DroppedAsset, errorHandler, getCredentials, initializeDroppedAssetDataObject } from "../../utils/index.js";
+import { DroppedAsset, errorHandler, getCredentials, initializeDefaultCheckInObject, initializeDroppedAssetDataObject } from "../../utils/index.js";
 import { IDroppedAsset } from "../../types/DroppedAssetInterface.js";
-import { CheckInDataObject } from "../../types/CheckInDataObject.js";
+import { CheckInAsset } from "../../types/CheckInDataObject.js";
 import { getTodayKey } from "./handleCheckIn.js";
 
 export const AdminReset = async (req: Request, res: Response) => {
@@ -13,18 +13,22 @@ export const AdminReset = async (req: Request, res: Response) => {
     console.log("Credentials: ", credentials);
     const { assetId, urlSlug } = credentials;
     
-    const droppedAsset = await DroppedAsset.get(assetId, urlSlug, { credentials });
+    const droppedAsset = await DroppedAsset.get(assetId, urlSlug, { credentials }) as CheckInAsset;
 
     const newGoal = parseInt(req.body.goal as string) || 100;
 
+    await initializeDefaultCheckInObject(droppedAsset as CheckInAsset);
+    console.log("Dropped Asset in AdminCheckIn.ts: ", droppedAsset);
     
     await droppedAsset.fetchDataObject();
 
     console.log("Data object before update: ", droppedAsset.dataObject);
     
+    
+    const dataObject = droppedAsset.dataObject as CheckInAsset["dataObject"];
 
-    const dataObject = droppedAsset.dataObject as CheckInDataObject;
 
+    /*
     if (!dataObject) {
         droppedAsset.dataObject = {} as CheckInDataObject;
     }
@@ -36,8 +40,11 @@ export const AdminReset = async (req: Request, res: Response) => {
     if (!dataObject.overallTally) {
         dataObject.overallTally = 0;
     }
+    */
 
-    const overallTally = dataObject.overallTally;
+    
+
+    const overallTally = dataObject?.overallTally ?? 0;
     const isPopped = overallTally >= newGoal;
 
     
@@ -65,7 +72,7 @@ export const AdminReset = async (req: Request, res: Response) => {
         return res.json({
             success: false,
             message: "Unable to make goal a negative integer!",
-            goalToPop: dataObject.goal,
+            goalToPop: dataObject?.goal ?? 100,
             droppedAsset,
           });
     }
@@ -104,7 +111,9 @@ export const AdminResetTally = async (req: Request, res: Response) => {
       console.log("Credentials: ", credentials);
       const { assetId, urlSlug } = credentials;
       
-      const droppedAsset = await DroppedAsset.get(assetId, urlSlug, { credentials });
+      const droppedAsset = await DroppedAsset.get(assetId, urlSlug, { credentials }) as CheckInAsset;
+      await initializeDefaultCheckInObject(droppedAsset as CheckInAsset);
+      console.log("Dropped Asset in AdminResetTally: ", droppedAsset);
   
       const newGoal = parseInt(req.body.goal as string) || 100;
   
@@ -114,7 +123,7 @@ export const AdminResetTally = async (req: Request, res: Response) => {
       console.log("Data object before update: ", droppedAsset.dataObject);
       
   
-      const dataObject = droppedAsset.dataObject as CheckInDataObject;
+      //const dataObject = droppedAsset.dataObject as CheckInDataObject;
       
       //resetting the tally and getting rid of daily records
       const updates = {
@@ -133,7 +142,16 @@ export const AdminResetTally = async (req: Request, res: Response) => {
       await droppedAsset.updateDataObject(updates);
       console.log("Updated Dropped Asset Data Object: ", droppedAsset.dataObject);
       
-      const newOverallTally = (droppedAsset.dataObject as CheckInDataObject).overallTally;
+      //const newOverallTally = (droppedAsset.dataObject as CheckInDataObject).overallTally;
+      
+      const dataObject = droppedAsset.dataObject as CheckInAsset["dataObject"];
+      /*
+      if (!dataObject) {
+        throw new Error("Data object is undefined after update.");
+      }*/
+      const newOverallTally = dataObject?.overallTally?? 0;
+
+  
   
       await droppedAsset.fetchDataObject();
       console.log("Fetched Dropped Asset Data Object AFTER UPDATE: ", droppedAsset.dataObject);
