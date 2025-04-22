@@ -16,13 +16,14 @@ export const AdminReset = async (req: Request, res: Response) => {
     const droppedAsset = await DroppedAsset.get(assetId, urlSlug, { credentials }) as CheckInAsset;
 
     const newGoal = parseInt(req.body.goal as string) || 100;
+    console.log("New Goal: ", newGoal);
 
     await initializeDefaultCheckInObject(droppedAsset as CheckInAsset);
     console.log("Dropped Asset in AdminCheckIn.ts: ", droppedAsset);
     
     await droppedAsset.fetchDataObject();
 
-    console.log("Data object before update: ", droppedAsset.dataObject);
+    console.log("Data object before update in AdminCheckIn.ts: ", droppedAsset.dataObject);
     
     
     const dataObject = droppedAsset.dataObject as CheckInAsset["dataObject"];
@@ -60,6 +61,8 @@ export const AdminReset = async (req: Request, res: Response) => {
 
         };
         await droppedAsset.updateDataObject(updates);
+        await droppedAsset.fetchDataObject();
+        console.log("Updated Dropped Asset Data Object in adminReset: ", droppedAsset.dataObject);
         return res.json({
             success: true,
             message: "Updated goal successfully!",
@@ -94,7 +97,7 @@ export const AdminReset = async (req: Request, res: Response) => {
     return errorHandler({
       error,
       functionName: "getDroppedAssetDetails",
-      message: "Error getting dropped asset instance and data object",
+      message: "Error getting dropped asset instance and data object in AdminReset",
       req,
       res,
     });
@@ -116,11 +119,12 @@ export const AdminResetTally = async (req: Request, res: Response) => {
       console.log("Dropped Asset in AdminResetTally: ", droppedAsset);
   
       const newGoal = parseInt(req.body.goal as string) || 100;
+      console.log("New Goal in AdminResetTally: ", newGoal);
   
       
       await droppedAsset.fetchDataObject();
   
-      console.log("Data object before update: ", droppedAsset.dataObject);
+      console.log("Data object before update in AdminResetTally: ", droppedAsset.dataObject);
       
   
       //const dataObject = droppedAsset.dataObject as CheckInDataObject;
@@ -174,7 +178,7 @@ export const AdminResetTally = async (req: Request, res: Response) => {
       return errorHandler({
         error,
         functionName: "getDroppedAssetDetails",
-        message: "Error getting dropped asset instance and data object",
+        message: "Error getting dropped asset instance and data object in AdminResetTally",
         req,
         res,
       });

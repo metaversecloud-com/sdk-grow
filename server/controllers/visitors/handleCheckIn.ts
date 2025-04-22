@@ -1,7 +1,8 @@
 import { Request, Response } from "express";
 import { DroppedAsset,World, errorHandler, getCredentials, initializeDroppedAssetDataObject } from "../../utils/index.js";
 import { IDroppedAsset } from "../../types/DroppedAssetInterface.js";
-import { CheckInDataObject } from "../../types/CheckInDataObject.js";
+import { CheckInAsset } from "../../types/CheckInDataObject.js";
+import { initializeDefaultCheckInObject } from "../../utils/index.js";
 
 
 
@@ -26,18 +27,36 @@ export const handleCheckIn = async (req: Request, res: Response) => {
     //getting world to fire toast message
     const world = World.create(credentials.urlSlug, { credentials });
 
-    const droppedAsset = await DroppedAsset.get(assetId, urlSlug, { credentials });
-    console.log("Dropped Asset: ", droppedAsset);
-    console.log("Dropped asset position: ", droppedAsset.position);
+    const droppedAsset = await DroppedAsset.get(assetId, urlSlug, { credentials }) as CheckInAsset;
+
+    
+
+    await droppedAsset.fetchDataObject();
+    console.log("Dropped ASSET ID : ", droppedAsset.id);
+
+    console.log("Data object before update IN HANDLECHECKIN: ", droppedAsset.dataObject);
+
+   
+    
+
+    await initializeDefaultCheckInObject(droppedAsset);
+
+    //console.log("Dropped Asset: ", droppedAsset);
+    //console.log("Dropped asset position: ", droppedAsset.position);
 
     
     await droppedAsset.fetchDataObject();
 
-    console.log("Data object before update: ", droppedAsset.dataObject);
-    
 
-    const dataObject = droppedAsset.dataObject as CheckInDataObject;
+    const dataObject = droppedAsset.dataObject as CheckInAsset["dataObject"];
 
+    console.log("CHECK IN DATA OBJECT: from handleCheckIn ", dataObject);
+
+    if(!dataObject){
+        throw new Error("Data object is undefined");
+    }
+
+    /*
     if (!dataObject) {
         droppedAsset.dataObject = {} as CheckInDataObject;
     }
@@ -54,13 +73,15 @@ export const handleCheckIn = async (req: Request, res: Response) => {
     if(!dataObject.overallTally){
       dataObject.overallTally = 0;
     }
+    */
 
     //checking if any user has checked in today
     const todayKey = getTodayKey();
-    const todayEntry = dataObject.dailyCheckIns[todayKey] || {
+    const todayEntry = dataObject?.dailyCheckIns?.[todayKey] || {
       total: 0,
       users: {},
     };
+    
 
     
     //if users is in date mapping (already checked in), return already checked in json message
@@ -76,8 +97,8 @@ export const handleCheckIn = async (req: Request, res: Response) => {
           success: true,
           message: "You have already checked in today!",
           tally: todayEntry.total,
-          overallTally: dataObject.overallTally,
-          goalToPop: dataObject.goal,
+          overallTally: dataObject?.overallTally ?? 0,
+          goalToPop: dataObject?.goal ?? 100,
           droppedAsset,
         });
       }

@@ -20,6 +20,7 @@ import {initializeDefaultCheckInObject} from "../../utils/droppedAssets/constant
 
     
     await droppedAsset.fetchDataObject();
+    console.log("CHECK IN DATA OBJECT: from handleGetCheckInInfo ", droppedAsset.dataObject);
 
     //console.log("Data object before update: ", droppedAsset.dataObject);
     await initializeDefaultCheckInObject(droppedAsset as CheckInAsset);
@@ -28,11 +29,14 @@ import {initializeDefaultCheckInObject} from "../../utils/droppedAssets/constant
     console.log("CHECK IN DATA OBJECT: ", droppedAsset.dataObject);
 
     const dataObject = droppedAsset.dataObject as CheckInAsset["dataObject"];
-    /*
+    
     if (!dataObject) {
-        droppedAsset.dataObject = {} as CheckInDataObject;
+        //droppedAsset.dataObject = {} as CheckInDataObject;
+        throw new Error("Data object is undefined");
     }
 
+
+    /*
     if (!dataObject.dailyCheckIns) {
         dataObject.dailyCheckIns = {};
     }
@@ -48,9 +52,9 @@ import {initializeDefaultCheckInObject} from "../../utils/droppedAssets/constant
 
 
     //const dataObject = droppedAsset.fetchDataObject;
-    const overallTally = dataObject?.overallTally ?? 0;
+    const overallTally = dataObject.overallTally;
 
-    const goal = dataObject?.goal ?? 100;
+    const goal = dataObject.goal;
     
     const isPopped = overallTally >= goal;
 

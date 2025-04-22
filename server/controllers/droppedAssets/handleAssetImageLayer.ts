@@ -20,6 +20,8 @@ export const handleAssetImageLayer = async (req: Request, res: Response) => {
 
     const balloonImage = `https://sdk-grow.s3.us-east-1.amazonaws.com/Pump-${stage}.png`;
 
+    //have to change specialType to webImage?
+
     /*
     await droppedAsset.updateAsset({
         assetName: `Balloon_Pump`,
