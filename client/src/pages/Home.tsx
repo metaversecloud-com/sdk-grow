@@ -96,7 +96,7 @@ const Home = () => {
   useEffect(() => {
     
     if (pump_number !== null && hasInteractiveParams) {
-      //backendAPI.post("/change-image", { stage: pump_number });
+      backendAPI.post("/change-image", { stage: pump_number });
       console.log("Pump stage SENT TO BACKEND:", pump_number);
     }
   },[pump_number, hasInteractiveParams]);

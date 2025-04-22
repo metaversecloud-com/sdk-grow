@@ -1,7 +1,8 @@
 import { Request, Response } from "express";
-import { DroppedAsset, errorHandler, getCredentials, initializeDroppedAssetDataObject } from "../../utils/index.js";
+import { DroppedAsset, errorHandler, getCredentials, initializeDefaultCheckInObject, initializeDroppedAssetDataObject } from "../../utils/index.js";
 import { IDroppedAsset } from "../../types/DroppedAssetInterface.js";
 import { AssetFactory } from "@rtsdk/topia";
+import { CheckInAsset } from "../../types/CheckInDataObject.js";
 
 export const handleAssetImageLayer = async (req: Request, res: Response) => {
   try {
@@ -38,7 +39,7 @@ export const handleAssetImageLayer = async (req: Request, res: Response) => {
     // If the application will make any updates to a dropped asset's data object we need to
     // first instantiate to ensure it's existence and define it's proper structure.
     // The same should be true for World, User, and Visitor data objects
-    await initializeDroppedAssetDataObject(droppedAsset as IDroppedAsset);
+    await initializeDefaultCheckInObject(droppedAsset as CheckInAsset);
 
     await droppedAsset.updateWebImageLayers("",balloonImage);
 
