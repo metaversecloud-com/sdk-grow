@@ -86,11 +86,11 @@ Caleb Hollander
 ### Add your .env environmental variables
 
 ```json
-API_KEY=xxxxxxxxxxxxx
+API_KEY=NTJhZDJlNTQtMzNmMy00M2JmLTg2YTgtODlhYjM3YmVjNTcw
 INSTANCE_DOMAIN=api.topia.io
 INSTANCE_PROTOCOL=https
-INTERACTIVE_KEY=xxxxxxxxxxxxx
-INTERACTIVE_SECRET=xxxxxxxxxxxxxx
+INTERACTIVE_KEY=3XFv3b60uIm2nkxTw1LL
+INTERACTIVE_SECRET=NzU3MGQ2YmQtMGNiZS00MmVkLTkxN2ItMDdlYTBkMTUzZDQ0
 ```
 
 ### Where to find API_KEY, INTERACTIVE_KEY and INTERACTIVE_SECRET
