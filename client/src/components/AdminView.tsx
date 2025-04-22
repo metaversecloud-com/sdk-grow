@@ -21,6 +21,7 @@ export const AdminView = () => {
   const [areButtonsDisabled, setAreButtonsDisabled] = useState(false);
   const [tally, setTally] = useState(0);
   const [overallTally, setOverallTally] = useState(0);
+  const[pump_number, setPumpNumber] = useState(0);
   const navigate = useNavigate();
 
 
@@ -32,6 +33,7 @@ export const AdminView = () => {
   const handleResetConfirm = (data:any) => {
     setTally(0);
     setOverallTally(data.overallTally);
+    setPumpNumber(getPumpStage(data.overallTally, goal));
   }
   //goes back to home page
   const handleRedirect = () => {
@@ -47,6 +49,8 @@ export const AdminView = () => {
         console.log("Response: ", response);
         console.log("RESPONSE DATA FOR RESETTING GOAL: ", response.data);
         console.log("RESPONSE GOAL: ", response.data.goalToPop);
+        console.log("RESPONSE OVERALL TALLY AND GOAL: ", response.data.overallTally, response.data.goalToPop);
+        setPumpNumber(getPumpStage(response.data.overallTally, response.data.goalToPop));
         
       })
       .catch((error) => setErrorMessage(dispatch, error))
@@ -54,6 +58,19 @@ export const AdminView = () => {
         
       });
   };
+
+    //gets which stage the pump is at
+    const getPumpStage = (tally:number, goal:number):number => {
+      //("TALLY AND GOAL: ", tally, goal);
+      //20 pictures
+      const stages = 20;
+      if(!goal || tally <= 0){
+        return 0;
+      }
+      const ratio = tally/goal;
+      const curr_stage = Math.min(stages - 1, Math.floor(ratio * stages));
+      return curr_stage;
+    }
 
   useEffect(() => {
     backendAPI
@@ -66,6 +83,10 @@ export const AdminView = () => {
       console.log("Asset info: ", response.data.droppedAsset);
       setGoal(response.data.goalToPop);
       console.log("GOAL FROM JSON: ", response.data.goalToPop);
+
+      //getting initial pump stage - the runtime is somewhat slow with so many useEffects and backend calls
+      const initialPumpStage = getPumpStage(response.data.overallTally, response.data.goalToPop);
+      setPumpNumber(initialPumpStage);
       
       
     })
@@ -75,6 +96,16 @@ export const AdminView = () => {
     });
     
   }, []);
+
+
+  //changes pump image whenever pump number changes
+  useEffect(() => {
+    console.log("PUMP NUMBER: ", pump_number);
+    if (pump_number !== null) {
+      backendAPI.post("/change-image", { stage: pump_number });
+      //console.log("Pump stage SENT TO BACKEND:", pump_number);
+    }
+  }, [pump_number]);
 
   return (
     <div className="admin-container p-6">

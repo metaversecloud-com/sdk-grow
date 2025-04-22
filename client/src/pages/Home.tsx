@@ -92,7 +92,7 @@ const Home = () => {
         
     }
   }, [hasInteractiveParams]);
-//whenever pump number changes and has interactive params, send to backend to change asset image
+//whenever pump number changes or hasInteractiveParams changes, send to backend to change asset image
   useEffect(() => {
     
     if (pump_number !== null && hasInteractiveParams) {
