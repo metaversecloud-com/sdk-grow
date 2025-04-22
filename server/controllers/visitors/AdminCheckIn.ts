@@ -69,12 +69,6 @@ export const AdminReset = async (req: Request, res: Response) => {
           });
     }
     
-    /*
-    console.log("Updated Dropped Asset Data Object: ", droppedAsset.dataObject);
-
-    await droppedAsset.fetchDataObject();
-    console.log("Fetched Dropped Asset Data Object AFTER UPDATE: ", droppedAsset.dataObject);
-    */
 
   
 
