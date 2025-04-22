@@ -28,24 +28,13 @@ export const AdminReset = async (req: Request, res: Response) => {
     
     const dataObject = droppedAsset.dataObject as CheckInAsset["dataObject"];
 
-
-    /*
-    if (!dataObject) {
-        droppedAsset.dataObject = {} as CheckInDataObject;
+    if(!dataObject){
+      throw new Error("Data object is undefined in AdminReset");
     }
-
-    if (!dataObject.dailyCheckIns) {
-        dataObject.dailyCheckIns = {};
-    }
-    
-    if (!dataObject.overallTally) {
-        dataObject.overallTally = 0;
-    }
-    */
 
     
 
-    const overallTally = dataObject?.overallTally ?? 0;
+    const overallTally = dataObject.overallTally ?? 0;
     const isPopped = overallTally >= newGoal;
 
     
@@ -75,7 +64,7 @@ export const AdminReset = async (req: Request, res: Response) => {
         return res.json({
             success: false,
             message: "Unable to make goal a negative integer!",
-            goalToPop: dataObject?.goal ?? 100,
+            goalToPop: dataObject.goal ?? 100,
             droppedAsset,
           });
     }
@@ -110,24 +99,23 @@ export const AdminResetTally = async (req: Request, res: Response) => {
       const credentials = getCredentials(req.query);
   
       const profileId = credentials.profileId;
-      console.log("Profile ID: ", profileId);
-      console.log("Credentials: ", credentials);
+      //console.log("Profile ID: ", profileId);
+      //console.log("Credentials: ", credentials);
       const { assetId, urlSlug } = credentials;
       
       const droppedAsset = await DroppedAsset.get(assetId, urlSlug, { credentials }) as CheckInAsset;
+
+      //checking if the data object exists - if not, initialize it with default values
       await initializeDefaultCheckInObject(droppedAsset as CheckInAsset);
-      console.log("Dropped Asset in AdminResetTally: ", droppedAsset);
-  
-      const newGoal = parseInt(req.body.goal as string) || 100;
-      console.log("New Goal in AdminResetTally: ", newGoal);
+      //console.log("Dropped Asset in AdminResetTally: ", droppedAsset);
+
   
       
       await droppedAsset.fetchDataObject();
   
-      console.log("Data object before update in AdminResetTally: ", droppedAsset.dataObject);
+      //console.log("Data object before update in AdminResetTally: ", droppedAsset.dataObject);
       
-  
-      //const dataObject = droppedAsset.dataObject as CheckInDataObject;
+
       
       //resetting the tally and getting rid of daily records
       const updates = {
@@ -149,22 +137,25 @@ export const AdminResetTally = async (req: Request, res: Response) => {
       //const newOverallTally = (droppedAsset.dataObject as CheckInDataObject).overallTally;
       
       const dataObject = droppedAsset.dataObject as CheckInAsset["dataObject"];
-      /*
-      if (!dataObject) {
-        throw new Error("Data object is undefined after update.");
-      }*/
-      const newOverallTally = dataObject?.overallTally?? 0;
+
+      if(!dataObject){
+        throw new Error("Data object is undefined in AdminResetTally");
+      }
+
+      console.log("DATA OBJECT GOAL IN ADMINRESETTALLY: ", dataObject.goal);
+  
+      const newOverallTally = dataObject?.overallTally ?? 0;
 
   
-  
+      
       await droppedAsset.fetchDataObject();
-      console.log("Fetched Dropped Asset Data Object AFTER UPDATE: ", droppedAsset.dataObject);
+      //console.log("Fetched Dropped Asset Data Object AFTER UPDATE: ", droppedAsset.dataObject);
 
-  
+      //returning success response with tally reset
       return res.json({
           success: true,
           message: "RESET TALLY SUCCESSFULLY!",
-          goalToPop: newGoal,
+          goalToPop: dataObject.goal,
           isPopped: false,
           overallTally:newOverallTally,
           droppedAsset,

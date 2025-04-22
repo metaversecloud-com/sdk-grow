@@ -27,14 +27,15 @@ export const handleCheckIn = async (req: Request, res: Response) => {
     //getting world to fire toast message
     const world = World.create(credentials.urlSlug, { credentials });
 
+    //getting dropped asset instance and casting to CheckInAsset
     const droppedAsset = await DroppedAsset.get(assetId, urlSlug, { credentials }) as CheckInAsset;
 
     
 
     await droppedAsset.fetchDataObject();
-    console.log("Dropped ASSET ID : ", droppedAsset.id);
+    //console.log("Dropped ASSET ID : ", droppedAsset.id);
 
-    console.log("Data object before update IN HANDLECHECKIN: ", droppedAsset.dataObject);
+    //console.log("Data object before update IN HANDLECHECKIN: ", droppedAsset.dataObject);
 
    
     
@@ -56,24 +57,6 @@ export const handleCheckIn = async (req: Request, res: Response) => {
         throw new Error("Data object is undefined");
     }
 
-    /*
-    if (!dataObject) {
-        droppedAsset.dataObject = {} as CheckInDataObject;
-    }
-
-    if (!dataObject.dailyCheckIns) {
-        dataObject.dailyCheckIns = {};
-    }
-
-    //goal with default value 100
-    if(!dataObject.goal){
-      dataObject.goal = 100;
-    }
-
-    if(!dataObject.overallTally){
-      dataObject.overallTally = 0;
-    }
-    */
 
     //checking if any user has checked in today
     const todayKey = getTodayKey();
@@ -104,6 +87,7 @@ export const handleCheckIn = async (req: Request, res: Response) => {
       }
 
       //unable to check in - goal already met/balloon already popped 
+      console.log("DATA OBJECT GOAL: ", dataObject.goal);
       if (dataObject.overallTally >= dataObject.goal) {
         dataObject.isPopped = true;
 
@@ -113,13 +97,14 @@ export const handleCheckIn = async (req: Request, res: Response) => {
           text: "You have already met the goal!",
         });
 
+        //the goal has already been meet, but returing success message
         return res.json({
           success: true,
           message: "You have already met the goal!",
           tally: todayEntry.total,
           overallTally: dataObject.overallTally,
           goalToPop: dataObject.goal,
-          popped: true,
+          isPopped: true,
           droppedAsset,
         });
       }
@@ -151,16 +136,20 @@ export const handleCheckIn = async (req: Request, res: Response) => {
     await droppedAsset.fetchDataObject();
     console.log("Fetched Dropped Asset Data Object AFTER UPDATE: ", droppedAsset.dataObject);
 
+    //firing toast for successful check in
     await world.fireToast({
       title: "Successfully Checked In",
       text: "You have successfully checked in! Please come back tomorrow!",
     });
 
+    //successful check in with updated data object
     return res.json({
         success: true,
         message: "Checked in successfully!",
         tally: newTotal,
         overallTally: newOverallTally,
+        goalToPop: dataObject.goal,
+        isPopped: newOverallTally >= dataObject.goal,
         droppedAsset,
       });
 

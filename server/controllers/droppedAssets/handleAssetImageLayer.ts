@@ -7,13 +7,12 @@ import { CheckInAsset } from "../../types/CheckInDataObject.js";
 export const handleAssetImageLayer = async (req: Request, res: Response) => {
   try {
     
-    // https://raw.githubusercontent.com/calebhollander/Balloon-Assets/blob/main/Pump-0.png
     const credentials = getCredentials(req.query);
     //console.log("Credentials: ", credentials);
-    console.log("HANDLING ASSET IMAGE...");
+    //console.log("HANDLING ASSET IMAGE...");
     const { assetId, urlSlug } = credentials;
     const{stage} = req.body;
-    console.log("Stage: ", stage);
+    //console.log("Stage: ", stage);
 
     const droppedAsset = await DroppedAsset.get(assetId, urlSlug, { credentials });
     
@@ -21,20 +20,7 @@ export const handleAssetImageLayer = async (req: Request, res: Response) => {
 
     const balloonImage = `https://sdk-grow.s3.us-east-1.amazonaws.com/Pump-${stage}.png`;
 
-    //have to change specialType to webImage?
-
-    /*
-    await droppedAsset.updateAsset({
-        assetName: `Balloon_Pump`,
-        creatorTags: {},
-        //maybe change isPublic to false
-        isPublic: true,
-        tagJson: "{}",
-        topLayerURL: balloonImage,
-        shouldUploadImages: false,
-        bottomLayerURL: undefined,
-    })
-    */
+    //specialType of asset is webImage
 
     // If the application will make any updates to a dropped asset's data object we need to
     // first instantiate to ensure it's existence and define it's proper structure.
@@ -44,6 +30,7 @@ export const handleAssetImageLayer = async (req: Request, res: Response) => {
     await droppedAsset.updateWebImageLayers("",balloonImage);
 
 
+    //returning success response
     return res.json({ droppedAsset, success: true, message: "Updated asset image layer successfully!" });
   } catch (error) {
     return errorHandler({

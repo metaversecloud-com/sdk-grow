@@ -2,7 +2,7 @@ import { Request, Response } from "express";
 import { World, errorHandler, getCredentials } from "../../utils/index.js";
 
 
-//would it make more sense for me to do it in the check in route and get x and y position from that request?
+//would it make more sense for me to do it in the check in route and get x and y position from that request? I thought that may be too much code in one function
 export const handleParticleEffects = async (req: Request, res: Response) => {
   try {
     const credentials = getCredentials(req.query);

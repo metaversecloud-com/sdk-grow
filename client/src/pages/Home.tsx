@@ -38,10 +38,10 @@ const Home = () => {
       backendAPI
         .get("/world")
         .then((response) => {
-          console.log("REPONSE FOR USEEFFECT: ", response);
+          //console.log("REPONSE FOR USEEFFECT: ", response);
           setGameState(dispatch, response.data);
           setDroppedAsset(response.data.droppedAsset);
-          console.log("DROPPED ASSET DATA: ", droppedAsset);
+          //console.log("DROPPED ASSET DATA: ", droppedAsset);
         })
         .catch((error) => setErrorMessage(dispatch, error))
         .finally(() => {
@@ -53,11 +53,11 @@ const Home = () => {
         .get("/visitor")
         .then((response) => {
           console.log("SUCCESS");
-          console.log("Response: ", response);
-          console.log("RESPONSE DATA: ", response.data);
+          //console.log("Response: ", response);
+          //console.log("RESPONSE DATA: ", response.data);
           const { visitor } = response.data;
-          console.log("VISITOR: ", visitor);
-          console.log("Visitor Admin: ", visitor.isAdmin);
+          //console.log("VISITOR: ", visitor);
+          //console.log("Visitor Admin: ", visitor.isAdmin);
           SetIsAdmin(visitor.isAdmin);
         })
         .catch((error) => setErrorMessage(dispatch, error))
@@ -71,15 +71,15 @@ const Home = () => {
         .get("/check-in-info")
         .then((response) => {
           setTally(response.data.tally);
-          console.log("TALLY: ", response.data.tally);
-          console.log("GOAL TO POP: ", response.data.goalToPop);
+          //console.log("TALLY: ", response.data.tally);
+          //console.log("GOAL TO POP: ", response.data.goalToPop);
           setGoal(response.data.goalToPop);
           setOverallTally(response.data.overallTally);
           const pump_stage = getPumpStage(response.data.overallTally, response.data.goalToPop);
           setPumpNumber(pump_stage);
+          console.log("Pump stage: ", pump_stage)
 
-          //setPumpNumber(getPumpStage())
-          console.log("Asset info: ", response.data.droppedAsset);
+          //console.log("Asset info: ", response.data.droppedAsset);
           setPosition(response.data.droppedAsset.position);
         })
         .catch((error) => setErrorMessage(dispatch, error))
@@ -97,33 +97,13 @@ const Home = () => {
     
     if (pump_number !== null && hasInteractiveParams) {
       backendAPI.post("/change-image", { stage: pump_number });
-      console.log("Pump stage SENT TO BACKEND:", pump_number);
+      //console.log("Pump stage SENT TO BACKEND:", pump_number);
     }
   },[pump_number, hasInteractiveParams]);
 
-  /*
-  const handleGetDroppedAsset = async () => {
-    setAreButtonsDisabled(true);
-    //setDroppedAsset(defaultDroppedAsset);
-
-    backendAPI
-      .get("/dropped-asset")
-      .then((response) => {
-        console.log("Response: ", response);
-        setDroppedAsset(response.data.droppedAsset);
-        //setting position to use for particle effects
-        
-      })
-      .catch((error) => setErrorMessage(dispatch, error))
-      .finally(() => {
-        setAreButtonsDisabled(false);
-      });
-  };
-  */
-
   //gets which stage the pump is at
   const getPumpStage = (tally:number, goal:number):number => {
-    console.log("TALLY AND GOAL: ", tally, goal);
+    //("TALLY AND GOAL: ", tally, goal);
     //20 pictures
     const stages = 20;
     if(!goal || tally <= 0){
@@ -141,14 +121,20 @@ const Home = () => {
     backendAPI
       .get("/check-in")
       .then((response) => {
-        console.log("Response FOR CHECKING IN: ", response);
+        //console.log("Response FOR CHECKING IN: ", response);
 
         //setting tally and overall tally
         setTally(response.data.tally);
         setOverallTally(response.data.overallTally);
+        console.log("TALLY, GOAL, OVERALL TALLY: ", response.data.tally, response.data.goalToPop, response.data.overallTally);
+        const pump_stage = getPumpStage(response.data.overallTally, response.data.goalToPop);
+        setPumpNumber(pump_stage);
+        console.log("PUMP STAGE: ", pump_stage);
+       
+        
         if(response.status = 200){
-            console.log("CHECK IN SUCCESS");
-            console.log("POSITION: ", position.x, position.y);
+            //console.log("CHECK IN SUCCESS");
+            //console.log("POSITION: ", position.x, position.y);
           backendAPI.post("/particle-effects", {includeDataObject: true}, {
         params: {
           //getting position to fire particle effects - couldn't find in devdocs getting position not in droppedasset
@@ -168,13 +154,13 @@ const Home = () => {
 
   const handleWorldAsset = async () => {
     setAreButtonsDisabled(true);
-    console.log("ASSET: ", droppedAsset);
+    //console.log("ASSET: ", droppedAsset);
 
     backendAPI
       .get("/world")
       .then((response) => {
         console.log("SUCCESS");
-        console.log("Response: ", response);
+        //console.log("Response: ", response);
         return response;
       })
       .catch((error) => setErrorMessage(dispatch, error))
@@ -225,7 +211,7 @@ const Home = () => {
 
       <div className="mt-6">
   <button
-    className="btn bg-blue-600 hover:bg-blue-700 text-white w-full py-3 text-lg rounded-xl"
+    className="bg-blue-600 hover:bg-blue-700 text-white w-full py-3 text-lg rounded-xl"
     disabled={areButtonsDisabled}
     onClick={handleCheckIn}
   >
