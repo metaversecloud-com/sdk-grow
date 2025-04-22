@@ -78,17 +78,27 @@ export const AdminView = () => {
 
   return (
     <div className="admin-container p-6">
+      <h1 className="mt-6 text-sm text-gray-600">Grow App</h1>
   <h1 className="text-2xl font-bold mb-4">Admin View</h1>
 
   <div className="mb-4">
-    <h2 className="text-lg">Current Tally: <span className="font-medium">{overallTally}</span></h2>
-    <h2 className="text-lg">Daily Tally: <span className="font-medium">{tally}</span></h2>
-    <h2 className="text-lg">Goal: <span className="font-medium">{goal}</span></h2>
+  <p className="text-md">
+          <span className="font-medium">Overall Tally:</span>{" "}
+          <span className="text-blue-700 font-bold">{overallTally}</span>
+        </p>
+    <p className="text-md">
+          <span className="font-medium">Daily Tally:</span>{" "}
+          <span className="text-blue-700 font-bold">{tally}</span>
+        </p>
+    <p className="text-md">
+          <span className="font-medium">Goal:</span>{" "}
+          <span className="text-blue-700 font-bold">{goal}</span>
+        </p>
 
   </div>
 
   <div className="mb-4">
-    <label htmlFor="goal-input" className="block mb-1 text-sm font-medium">Set New Goal:</label>
+    <label htmlFor="goal-input" className="block mb-1 text-sm font-medium w-full">Set New Goal:</label>
     <input
       id="goal-input"
       type="number"
@@ -96,20 +106,20 @@ export const AdminView = () => {
       max={999}
       value={goal}
       onChange={(e) => setGoal(Number(e.target.value))}
-      className="border border-gray-300 rounded px-3 py-1 w-32"
+      className="border border-gray-300 rounded px-3 py-2 w-full"
     />
   </div>
 
   <button
-    className="reset-goal-button bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
+    className="w-full bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 mb-3"
     onClick={handleReset}
   >
     Set Goal!
   </button>
 
   <button
-    className="back-button bg-gray-700 text-white px-4 py-2 ml-2 rounded hover:bg-blue-700"
-    onClick={handleRedirect}
+     className="w-full bg-gray-700 text-white px-4 py-2 rounded hover:bg-gray-800 mb-6"
+     onClick={handleRedirect}
   >
     Back
   </button>
@@ -120,7 +130,7 @@ export const AdminView = () => {
         </button>
       </PageFooter>
 
-  <p className="mt-6 text-sm text-gray-600">Grow App</p>
+  
 
 
       {showConfirmationModal && (

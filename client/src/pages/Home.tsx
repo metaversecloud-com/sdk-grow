@@ -192,24 +192,48 @@ const Home = () => {
 
   return (
     <PageContainer isLoading={isLoading}>
-      <>
-        <h1 className="h2">Grow App</h1>
+    <div className="p-6">
+      <div className="flex justify-between items-center mb-2">
+        <h1 className="text-3xl font-bold text-gray-800">Grow App</h1>
+        {admin && (
+          <div className="ml-auto">
+            <AdminIconButton showSettings={showSettings} setShowSettings={setShowSettings} />
+          </div>
+        )}
+      </div>
 
-        <div className="flex flex-col w-full ">
-          <img className="w-96 h-96 object-cover rounded-2xl my-4" alt="Pump" src={`../../pumps_balloons/Pump-${pump_number}.png` }/>
-          {admin && <AdminIconButton showSettings={showSettings} setShowSettings={setShowSettings} />}
+      {/* Reduced space between header and image */}
+      <div className="flex justify-center mt-2 mb-4">
+        <img
+          className="w-80 h-80 object-cover rounded-2xl"
+          alt="Pump"
+          src={`../../pumps_balloons/Pump-${pump_number}.png`}
+        />
+      </div>
+
+      <div className="grid gap-4 mb-6">
+        <div className="bg-blue-100 text-blue-900 p-2 rounded-xl text-lg font-semibold text-center shadow">
+          Overall Tally: {overallTally}
         </div>
+        <div className="bg-blue-100 text-blue-900 p-2 rounded-xl text-lg font-semibold text-center shadow">
+          Daily Tally: {tally}
+        </div>
+        <div className="bg-blue-100 text-blue-900 p-2 rounded-xl text-lg font-semibold text-center shadow">
+          Goal: {goal}
+        </div>
+      </div>
 
-        <div className="flex flex-col w-full ">Overall Tally: {overallTally}</div>
-        <div className="flex flex-col w-full ">Daily Tally: {tally}</div>
-        <div className="flex flex-col w-full ">Goal: {goal}</div>
-        <PageFooter>
-          <button className="btn" disabled={areButtonsDisabled} onClick={handleCheckIn}>
-            Check In
-          </button>
-        </PageFooter>
-      </>
-    </PageContainer>
+      <div className="mt-6">
+  <button
+    className="btn bg-blue-600 hover:bg-blue-700 text-white w-full py-3 text-lg rounded-xl"
+    disabled={areButtonsDisabled}
+    onClick={handleCheckIn}
+  >
+    Help Me Grow!
+  </button>
+</div>
+    </div>
+  </PageContainer>
   );
 };
 
