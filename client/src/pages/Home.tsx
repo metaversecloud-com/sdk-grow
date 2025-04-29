@@ -36,15 +36,22 @@ const Home = () => {
   useEffect(() => {
     
     if (hasInteractiveParams) {
+      backendAPI.get("/world").then((response) => {
+        console.log("REPONSE FOR /world: ", response);
+        setGameState(dispatch, response.data);
+        setDroppedAsset(response.data.droppedAsset);
+      })
+      .catch((error) => {
+        console.error("Error fetching initial data:", error);
+        setErrorMessage(dispatch, error);
+      })
+
       Promise.all([
-        backendAPI.get("/world"),
         backendAPI.get("/visitor"),
         backendAPI.get("/check-in-info"),
       ])
-     .then(([worldRes, visitorRes, checkInInfoRes]) => {
-        console.log("RESPONSE FOR /world: ", worldRes);
-        setGameState(dispatch, worldRes.data);
-        //setDroppedAsset(worldRes.data.droppedAsset);
+     .then(([ visitorRes, checkInInfoRes]) => {
+        
         //console.log("DROPPED ASSET DATA: ", droppedAsset);
 
         console.log("SUCCESS");
@@ -170,7 +177,7 @@ const Home = () => {
         setPumpNumber(pump_stage);
         console.log("PUMP STAGE: ", pump_stage);
        
-        //if successful check in, even if goal is not reached or balloon popped or already checked in still fire particle effects
+        //if successful check in, even if goal is not reached or balloon popped or already checked in still fire 
         if(response.status = 200){
             //console.log("CHECK IN SUCCESS");
             //console.log("POSITION: ", position.x, position.y);
