@@ -6,7 +6,6 @@ import { World, errorHandler, getCredentials } from "../../utils/index.js";
 export const handleParticleEffects = async (req: Request, res: Response) => {
   try {
     const credentials = getCredentials(req.query);
-    //console.log("REQ QUERY IN PARTICLE EFFECTS: ", req.query);
 
     //getting position to fire particle effects
     const position = req.query.position;
@@ -15,7 +14,6 @@ export const handleParticleEffects = async (req: Request, res: Response) => {
     const x = parseFloat((req.query as any).params?.x) || 0;
     const y = parseFloat((req.query as any).params?.y) || 0;
 
-    console.log("Received position from client:", { x, y });
 
     //do I need to create a world every time I call world-related functions?
     const world = World.create(credentials.urlSlug, { credentials });

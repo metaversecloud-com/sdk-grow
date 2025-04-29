@@ -8,15 +8,10 @@ export const handleAssetImageLayer = async (req: Request, res: Response) => {
   try {
     
     const credentials = getCredentials(req.query);
-    //console.log("Credentials: ", credentials);
-    //console.log("HANDLING ASSET IMAGE...");
     const { assetId, urlSlug } = credentials;
     const{stage} = req.body;
-    //console.log("Stage: ", stage);
 
     const droppedAsset = await DroppedAsset.get(assetId, urlSlug, { credentials });
-    
-    console.log("Dropped Asset: ", droppedAsset);
 
     const balloonImage = `https://sdk-grow.s3.us-east-1.amazonaws.com/Pump-${stage}.png`;
 
@@ -27,6 +22,7 @@ export const handleAssetImageLayer = async (req: Request, res: Response) => {
     // The same should be true for World, User, and Visitor data objects
     await initializeDefaultCheckInObject(droppedAsset as CheckInAsset);
 
+    //using updateWebImageLayers to update the image layer
     await droppedAsset.updateWebImageLayers("",balloonImage);
 
 

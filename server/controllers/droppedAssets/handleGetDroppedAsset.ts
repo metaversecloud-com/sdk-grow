@@ -5,11 +5,9 @@ import { IDroppedAsset } from "../../types/DroppedAssetInterface.js";
 export const handleGetDroppedAsset = async (req: Request, res: Response) => {
   try {
     const credentials = getCredentials(req.query);
-    console.log("Credentials: ", credentials);
     const { assetId, urlSlug } = credentials;
 
     const droppedAsset = await DroppedAsset.get(assetId, urlSlug, { credentials });
-    console.log("Dropped Asset: ", droppedAsset);
 
     const keyAsset = await droppedAsset.setDataObject({
       keyAssetId: droppedAsset.id,

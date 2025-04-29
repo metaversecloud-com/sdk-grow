@@ -18,14 +18,12 @@ import {initializeDefaultCheckInObject} from "../../utils/droppedAssets/constant
    
     
     await droppedAsset.fetchDataObject();
-    //console.log("CHECK IN DATA OBJECT: from handleGetCheckInInfo ", droppedAsset.dataObject);
 
     
     //checking if the data object exists - if not, initialize it with default values
     await initializeDefaultCheckInObject(droppedAsset as CheckInAsset);
 
 
-    //console.log("CHECK IN DATA OBJECT: ", droppedAsset.dataObject);
 
     //getting the data object and casting to CheckInAsset data object
     const dataObject = droppedAsset.dataObject as CheckInAsset["dataObject"];
@@ -41,7 +39,6 @@ import {initializeDefaultCheckInObject} from "../../utils/droppedAssets/constant
     const overallTally = dataObject.overallTally;
 
     const goal = dataObject.goal;
-    console.log("GOAL FROM GETCHECKININFO: ", goal);
     
     const isPopped = overallTally >= goal;
 

@@ -79,7 +79,7 @@ const Home = () => {
     
     if (pump_number !== null && hasInteractiveParams) {
       backendAPI.post("/change-image", { stage: pump_number });
-      //console.log("Pump stage SENT TO BACKEND:", pump_number);
+      
     }
   },[pump_number, hasInteractiveParams]);
 
@@ -103,20 +103,16 @@ const Home = () => {
     backendAPI
       .get("/check-in")
       .then((response) => {
-        //console.log("Response FOR CHECKING IN: ", response);
-
         //setting tally and overall tally
         setTally(response.data.tally);
         setOverallTally(response.data.overallTally);
-        console.log("TALLY, GOAL, OVERALL TALLY: ", response.data.tally, response.data.goalToPop, response.data.overallTally);
         const pump_stage = getPumpStage(response.data.overallTally, response.data.goalToPop);
         setPumpNumber(pump_stage);
-        console.log("PUMP STAGE: ", pump_stage);
+        
        
         //if successful check in, even if goal is not reached or balloon popped or already checked in still fire 
         if(response.status = 200){
-            //console.log("CHECK IN SUCCESS");
-            //console.log("POSITION: ", position.x, position.y);
+          //sending particle effects
           backendAPI.post("/particle-effects", {includeDataObject: true}, {
         params: {
           //getting position to fire particle effects - couldn't find in devdocs getting position not in droppedasset
@@ -136,13 +132,10 @@ const Home = () => {
 
   const handleWorldAsset = async () => {
     setAreButtonsDisabled(true);
-    //console.log("ASSET: ", droppedAsset);
 
     backendAPI
       .get("/world")
       .then((response) => {
-        console.log("SUCCESS");
-        //console.log("Response: ", response);
         return response;
       })
       .catch((error) => setErrorMessage(dispatch, error))

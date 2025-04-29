@@ -6,13 +6,10 @@ export const handleParticleEffects = async (req: Request, res: Response) => {
     const credentials = getCredentials(req.query);
 
     const { includeDataObject } = req.body;
-    console.log("REQUEST BODY: ", req.body);
-    console.log("REQUEST QUERY:", req.query);
 
     const world = World.create(credentials.urlSlug, { credentials });
     await world.fetchDetails();
     await world.triggerParticle({ name: "Flame", duration: 10000, position: { x: 0, y: 0 } });
-    console.log("GETTING WORLD DETAILS...");
     if (includeDataObject) await world.fetchDataObject();
 
     return res.json({ world, success: true });

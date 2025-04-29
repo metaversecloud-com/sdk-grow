@@ -20,8 +20,7 @@ export const handleCheckIn = async (req: Request, res: Response) => {
   try {
     const credentials = getCredentials(req.query);
     const profileId = credentials.profileId;
-    console.log("Profile ID: ", profileId);
-    console.log("Credentials: ", credentials);
+    
     const { assetId, urlSlug } = credentials;
     
     //getting world to fire toast message
@@ -33,25 +32,17 @@ export const handleCheckIn = async (req: Request, res: Response) => {
     
 
     await droppedAsset.fetchDataObject();
-    //console.log("Dropped ASSET ID : ", droppedAsset.id);
-
-    //console.log("Data object before update IN HANDLECHECKIN: ", droppedAsset.dataObject);
 
    
     
 
     await initializeDefaultCheckInObject(droppedAsset);
 
-    //console.log("Dropped Asset: ", droppedAsset);
-    //console.log("Dropped asset position: ", droppedAsset.position);
-
     
     await droppedAsset.fetchDataObject();
 
 
     const dataObject = droppedAsset.dataObject as CheckInAsset["dataObject"];
-
-    console.log("CHECK IN DATA OBJECT: from handleCheckIn ", dataObject);
 
     if(!dataObject){
         throw new Error("Data object is undefined");
@@ -87,7 +78,6 @@ export const handleCheckIn = async (req: Request, res: Response) => {
       }
 
       //unable to check in - goal already met/balloon already popped 
-      console.log("DATA OBJECT GOAL: ", dataObject.goal);
       if (dataObject.overallTally >= dataObject.goal) {
         dataObject.isPopped = true;
 
@@ -124,17 +114,14 @@ export const handleCheckIn = async (req: Request, res: Response) => {
         isPopped: newOverallTally >= dataObject.goal,
       };
     
-    console.log("Fetched Dropped Asset Data Object: ", droppedAsset.dataObject);
 
     // If the application will make any updates to a dropped asset's data object we need to
     // first instantiate to ensure it's existence and define it's proper structure.
     // The same should be true for World, User, and Visitor data objects
     
     await droppedAsset.updateDataObject(updates);
-    console.log("Updated Dropped Asset Data Object: ", droppedAsset.dataObject);
 
     await droppedAsset.fetchDataObject();
-    console.log("Fetched Dropped Asset Data Object AFTER UPDATE: ", droppedAsset.dataObject);
 
     //firing toast for successful check in
     await world.fireToast({

@@ -13,7 +13,6 @@ const config = {
 };
 
 const myTopiaInstance = new Topia(config);
-//console.log("TOPIA INSTANCE: ", myTopiaInstance);
 
 const Asset = new AssetFactory(myTopiaInstance);
 const DroppedAsset = new DroppedAssetFactory(myTopiaInstance);
