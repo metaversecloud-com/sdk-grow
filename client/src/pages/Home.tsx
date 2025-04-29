@@ -39,7 +39,33 @@ const Home = () => {
       backendAPI.get("/world").then((response) => {
         console.log("REPONSE FOR /world: ", response);
         setGameState(dispatch, response.data);
-        //setDroppedAsset(response.data.droppedAsset);
+        setDroppedAsset(response.data.droppedAsset);
+
+        return Promise.all([
+          backendAPI.get("/visitor"),
+          backendAPI.get("/check-in-info"),
+        ])
+       .then(([visitorRes, checkInInfoRes]) => {
+          
+          //console.log("DROPPED ASSET DATA: ", droppedAsset);
+  
+          console.log("SUCCESS");
+          console.log("Response: for /visitor: ", visitorRes);
+          const { visitor } = visitorRes.data;
+          SetIsAdmin(visitor.isAdmin);
+  
+          setTally(checkInInfoRes.data.tally);
+          console.log("RESPONSE FOR /check-in-info:", checkInInfoRes);
+          setGoal(checkInInfoRes.data.goalToPop);
+          setOverallTally(checkInInfoRes.data.overallTally);
+          const pump_stage = getPumpStage(checkInInfoRes.data.overallTally, checkInInfoRes.data.goalToPop);
+          setPumpNumber(pump_stage);
+          console.log("Pump stage: ", pump_stage)
+  
+          //console.log("Asset info: ", response.data.droppedAsset);
+          setPosition(checkInInfoRes.data.droppedAsset.position);
+  
+        })
       })
       .catch((error) => {
         console.error("Error fetching initial data from /world:", error);
@@ -47,42 +73,12 @@ const Home = () => {
       })
       .finally(() => {
         setIsLoading(false);
+        setAreButtonsDisabled(false);
         console.log("🚀 ~ Home.tsx ~ gameState:", gameState);
       });
 
-      Promise.all([
-        backendAPI.get("/visitor"),
-        backendAPI.get("/check-in-info"),
-      ])
-     .then(([visitorRes, checkInInfoRes]) => {
-        
-        //console.log("DROPPED ASSET DATA: ", droppedAsset);
-
-        console.log("SUCCESS");
-        console.log("Response: for /visitor: ", visitorRes);
-        const { visitor } = visitorRes.data;
-        SetIsAdmin(visitor.isAdmin);
-
-        setTally(checkInInfoRes.data.tally);
-        console.log("RESPONSE FOR /check-in-info:", checkInInfoRes);
-        setGoal(checkInInfoRes.data.goalToPop);
-        setOverallTally(checkInInfoRes.data.overallTally);
-        const pump_stage = getPumpStage(checkInInfoRes.data.overallTally, checkInInfoRes.data.goalToPop);
-        setPumpNumber(pump_stage);
-        console.log("Pump stage: ", pump_stage)
-
-        //console.log("Asset info: ", response.data.droppedAsset);
-        setPosition(checkInInfoRes.data.droppedAsset.position);
-
-      })
-      .catch((error) => {
-        console.error("Error fetching initial check in/visitor data:", error);
-        setErrorMessage(dispatch, error);
-      })
-      .finally(() => {
-        setIsLoading(false);
-        setAreButtonsDisabled(false);
-      });
+      
+      
       /*
       backendAPI
         .get("/world")
