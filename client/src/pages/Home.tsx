@@ -39,18 +39,22 @@ const Home = () => {
       backendAPI.get("/world").then((response) => {
         console.log("REPONSE FOR /world: ", response);
         setGameState(dispatch, response.data);
-        setDroppedAsset(response.data.droppedAsset);
+        //setDroppedAsset(response.data.droppedAsset);
       })
       .catch((error) => {
         console.error("Error fetching initial data from /world:", error);
         setErrorMessage(dispatch, error);
       })
+      .finally(() => {
+        setIsLoading(false);
+        console.log("🚀 ~ Home.tsx ~ gameState:", gameState);
+      });
 
       Promise.all([
         backendAPI.get("/visitor"),
         backendAPI.get("/check-in-info"),
       ])
-     .then(([ visitorRes, checkInInfoRes]) => {
+     .then(([visitorRes, checkInInfoRes]) => {
         
         //console.log("DROPPED ASSET DATA: ", droppedAsset);
 
