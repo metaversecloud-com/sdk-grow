@@ -72,7 +72,7 @@ const Home = () => {
 
       })
       .catch((error) => {
-        console.error("Error fetching initial data:", error);
+        console.error("Error fetching initial check in/visitor data:", error);
         setErrorMessage(dispatch, error);
       })
       .finally(() => {
