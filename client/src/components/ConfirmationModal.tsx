@@ -26,8 +26,6 @@ export const ConfirmationModal = ({
       .put(`/admin-reset-tally`)
       .then((response: { data: any }) => {
           
-        //setGameState(dispatch, response.data)
-        console.log("RESPONSE DATA FROM MODAL: ", response.data);
         handleConfirm(response.data); //pass the data back to the admin view
   })
       .catch((error: any) => setErrorMessage(dispatch, error))

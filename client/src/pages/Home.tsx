@@ -37,9 +37,8 @@ const Home = () => {
     
     if (hasInteractiveParams) {
       backendAPI.get("/world").then((response) => {
-        console.log("RESPONSE FOR /world NEW: ", response);
         setGameState(dispatch, response.data);
-        setDroppedAsset(response.data.droppedAsset);
+        //setDroppedAsset(response.data.droppedAsset);
 
         return Promise.all([
           backendAPI.get("/visitor"),
@@ -47,22 +46,17 @@ const Home = () => {
         ])
        .then(([visitorRes, checkInInfoRes]) => {
           
-          //console.log("DROPPED ASSET DATA: ", droppedAsset);
   
-          console.log("SUCCESS");
-          console.log("Response: for /visitor: ", visitorRes);
           const { visitor } = visitorRes.data;
           SetIsAdmin(visitor.isAdmin);
   
           setTally(checkInInfoRes.data.tally);
-          console.log("RESPONSE FOR /check-in-info:", checkInInfoRes);
+          
           setGoal(checkInInfoRes.data.goalToPop);
           setOverallTally(checkInInfoRes.data.overallTally);
           const pump_stage = getPumpStage(checkInInfoRes.data.overallTally, checkInInfoRes.data.goalToPop);
           setPumpNumber(pump_stage);
-          console.log("Pump stage: ", pump_stage)
-  
-          //console.log("Asset info: ", response.data.droppedAsset);
+          
           setPosition(checkInInfoRes.data.droppedAsset.position);
   
         })
@@ -76,64 +70,6 @@ const Home = () => {
         setAreButtonsDisabled(false);
         console.log("🚀 ~ Home.tsx ~ gameState:", gameState);
       });
-
-      
-      
-      /*
-      backendAPI
-        .get("/world")
-        .then((response) => {
-          console.log("REPONSE FOR /world: ", response);
-          setGameState(dispatch, response.data);
-          //setDroppedAsset(response.data.droppedAsset);
-          //console.log("DROPPED ASSET DATA: ", droppedAsset);
-        })
-        .catch((error) => setErrorMessage(dispatch, error))
-        .finally(() => {
-          setIsLoading(false);
-          console.log("🚀 ~ Home.tsx ~ gameState:", gameState);
-        });
-
-      backendAPI
-        .get("/visitor")
-        .then((response) => {
-          console.log("SUCCESS");
-          console.log("Response: for /visitor: ", response);
-          //console.log("RESPONSE DATA: ", response.data);
-          const { visitor } = response.data;
-          //console.log("VISITOR: ", visitor);
-          //console.log("Visitor Admin: ", visitor.isAdmin);
-          SetIsAdmin(visitor.isAdmin);
-        })
-        .catch((error) => setErrorMessage(dispatch, error))
-        .finally(() => {
-          setAreButtonsDisabled(false);
-        });
-
-
-
-        backendAPI
-        .get("/check-in-info")
-        .then((response) => {
-          setTally(response.data.tally);
-          console.log("RESPONSE FOR /check-in-info:", response);
-          //console.log("TALLY: ", response.data.tally);
-          //console.log("GOAL TO POP: ", response.data.goalToPop);
-          setGoal(response.data.goalToPop);
-          setOverallTally(response.data.overallTally);
-          const pump_stage = getPumpStage(response.data.overallTally, response.data.goalToPop);
-          setPumpNumber(pump_stage);
-          console.log("Pump stage: ", pump_stage)
-
-          //console.log("Asset info: ", response.data.droppedAsset);
-          setPosition(response.data.droppedAsset.position);
-        })
-        .catch((error) => setErrorMessage(dispatch, error))
-        .finally(() => {
-          setAreButtonsDisabled(false);
-        });
-
-        */
 
         
     }

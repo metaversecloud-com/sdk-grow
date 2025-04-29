@@ -40,16 +40,12 @@ export const AdminView = () => {
     navigate("/");
   };
   const handleReset = async () => {
-    console.log("CURRENT GOAL: ", goal);
+  
     //setDroppedAsset(defaultDroppedAsset);
 
     backendAPI
       .put("/admin-reset",{goal: goal})
       .then((response) => {
-        console.log("Response: ", response);
-        console.log("RESPONSE DATA FOR RESETTING GOAL: ", response.data);
-        console.log("RESPONSE GOAL: ", response.data.goalToPop);
-        console.log("RESPONSE OVERALL TALLY AND GOAL: ", response.data.overallTally, response.data.goalToPop);
         setPumpNumber(getPumpStage(response.data.overallTally, response.data.goalToPop));
         
       })
@@ -72,17 +68,14 @@ export const AdminView = () => {
       return curr_stage;
     }
 
+  //getting initial tally and goal
   useEffect(() => {
     backendAPI
     .get("/check-in-info")
     .then((response) => {
-      console.log("Response DATA: ", response.data);
-      console.log("RESPONSE TALLY: ", response.data.tally);
       setTally(response.data.tally);
       setOverallTally(response.data.overallTally);
-      console.log("Asset info: ", response.data.droppedAsset);
       setGoal(response.data.goalToPop);
-      console.log("GOAL FROM JSON: ", response.data.goalToPop);
 
       //getting initial pump stage - the runtime is somewhat slow with so many useEffects and backend calls
       const initialPumpStage = getPumpStage(response.data.overallTally, response.data.goalToPop);
@@ -100,10 +93,8 @@ export const AdminView = () => {
 
   //changes pump image whenever pump number changes
   useEffect(() => {
-    console.log("PUMP NUMBER: ", pump_number);
     if (pump_number !== null) {
       backendAPI.post("/change-image", { stage: pump_number });
-      //console.log("Pump stage SENT TO BACKEND:", pump_number);
     }
   }, [pump_number]);
 
