@@ -6,7 +6,7 @@ import { World, errorHandler, getCredentials } from "../../utils/index.js";
 export const handleParticleEffects = async (req: Request, res: Response) => {
   try {
     const credentials = getCredentials(req.query);
-    console.log("REQ QUERY: ", req.query);
+    //console.log("REQ QUERY IN PARTICLE EFFECTS: ", req.query);
 
     //getting position to fire particle effects
     const position = req.query.position;

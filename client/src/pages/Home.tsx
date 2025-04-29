@@ -34,13 +34,51 @@ const Home = () => {
   const[goal, setGoal] = useState(0);
 
   useEffect(() => {
+    
     if (hasInteractiveParams) {
+      Promise.all([
+        backendAPI.get("/world"),
+        backendAPI.get("/visitor"),
+        backendAPI.get("/check-in-info"),
+      ])
+     .then(([worldRes, visitorRes, checkInInfoRes]) => {
+        console.log("RESPONSE FOR /world: ", worldRes);
+        setGameState(dispatch, worldRes.data);
+        //setDroppedAsset(worldRes.data.droppedAsset);
+        //console.log("DROPPED ASSET DATA: ", droppedAsset);
+
+        console.log("SUCCESS");
+        console.log("Response: for /visitor: ", visitorRes);
+        const { visitor } = visitorRes.data;
+        SetIsAdmin(visitor.isAdmin);
+
+        setTally(checkInInfoRes.data.tally);
+        console.log("RESPONSE FOR /check-in-info:", checkInInfoRes);
+        setGoal(checkInInfoRes.data.goalToPop);
+        setOverallTally(checkInInfoRes.data.overallTally);
+        const pump_stage = getPumpStage(checkInInfoRes.data.overallTally, checkInInfoRes.data.goalToPop);
+        setPumpNumber(pump_stage);
+        console.log("Pump stage: ", pump_stage)
+
+        //console.log("Asset info: ", response.data.droppedAsset);
+        setPosition(checkInInfoRes.data.droppedAsset.position);
+
+      })
+      .catch((error) => {
+        console.error("Error fetching initial data:", error);
+        setErrorMessage(dispatch, error);
+      })
+      .finally(() => {
+        setIsLoading(false);
+        setAreButtonsDisabled(false);
+      });
+      /*
       backendAPI
         .get("/world")
         .then((response) => {
-          //console.log("REPONSE FOR USEEFFECT: ", response);
+          console.log("REPONSE FOR /world: ", response);
           setGameState(dispatch, response.data);
-          setDroppedAsset(response.data.droppedAsset);
+          //setDroppedAsset(response.data.droppedAsset);
           //console.log("DROPPED ASSET DATA: ", droppedAsset);
         })
         .catch((error) => setErrorMessage(dispatch, error))
@@ -53,7 +91,7 @@ const Home = () => {
         .get("/visitor")
         .then((response) => {
           console.log("SUCCESS");
-          //console.log("Response: ", response);
+          console.log("Response: for /visitor: ", response);
           //console.log("RESPONSE DATA: ", response.data);
           const { visitor } = response.data;
           //console.log("VISITOR: ", visitor);
@@ -71,6 +109,7 @@ const Home = () => {
         .get("/check-in-info")
         .then((response) => {
           setTally(response.data.tally);
+          console.log("RESPONSE FOR /check-in-info:", response);
           //console.log("TALLY: ", response.data.tally);
           //console.log("GOAL TO POP: ", response.data.goalToPop);
           setGoal(response.data.goalToPop);
@@ -87,7 +126,7 @@ const Home = () => {
           setAreButtonsDisabled(false);
         });
 
-           
+        */
 
         
     }
@@ -131,7 +170,7 @@ const Home = () => {
         setPumpNumber(pump_stage);
         console.log("PUMP STAGE: ", pump_stage);
        
-        
+        //if successful check in, even if goal is not reached or balloon popped or already checked in still fire particle effects
         if(response.status = 200){
             //console.log("CHECK IN SUCCESS");
             //console.log("POSITION: ", position.x, position.y);
