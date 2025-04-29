@@ -3,7 +3,6 @@ import {
   handleDropAsset,
   handleGetDroppedAsset,
   handleGetVisitor,
-  handleRemoveDroppedAssetsByUniqueName,
   handleGetWorldDetails,
   handleUpdateWorldDataObject,
   handleCheckIn,
@@ -40,7 +39,6 @@ router.get("/system/health", (req, res) => {
 // Dropped Assets
 router.post("/dropped-asset", handleDropAsset);
 router.get("/dropped-asset", handleGetDroppedAsset);
-router.post("/remove-dropped-assets", handleRemoveDroppedAssetsByUniqueName);
 
 // Visitor
 router.get("/visitor", handleGetVisitor);
