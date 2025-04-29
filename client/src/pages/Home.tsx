@@ -42,7 +42,7 @@ const Home = () => {
         setDroppedAsset(response.data.droppedAsset);
       })
       .catch((error) => {
-        console.error("Error fetching initial data:", error);
+        console.error("Error fetching initial data from /world:", error);
         setErrorMessage(dispatch, error);
       })
 
