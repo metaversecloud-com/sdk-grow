@@ -37,7 +37,7 @@ const Home = () => {
     
     if (hasInteractiveParams) {
       backendAPI.get("/world").then((response) => {
-        console.log("REPONSE FOR /world NEW: ", response);
+        console.log("RESPONSE FOR /world NEW: ", response);
         setGameState(dispatch, response.data);
         setDroppedAsset(response.data.droppedAsset);
 
