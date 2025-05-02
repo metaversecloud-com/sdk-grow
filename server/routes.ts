@@ -3,10 +3,15 @@ import {
   handleDropAsset,
   handleGetDroppedAsset,
   handleGetVisitor,
-  handleRemoveDroppedAssetsByUniqueName,
   handleGetWorldDetails,
   handleUpdateWorldDataObject,
+  handleCheckIn,
   handleFireToast,
+  handleGetCheckInInfo,
+  handleParticleEffects,
+  AdminReset,
+  AdminResetTally,
+  handleAssetImageLayer
 } from "./controllers/index.js";
 import { getVersion } from "./utils/getVersion.js";
 
@@ -34,7 +39,6 @@ router.get("/system/health", (req, res) => {
 // Dropped Assets
 router.post("/dropped-asset", handleDropAsset);
 router.get("/dropped-asset", handleGetDroppedAsset);
-router.post("/remove-dropped-assets", handleRemoveDroppedAssetsByUniqueName);
 
 // Visitor
 router.get("/visitor", handleGetVisitor);
@@ -43,5 +47,22 @@ router.get("/visitor", handleGetVisitor);
 router.get("/world", handleGetWorldDetails);
 router.put("/world/data-object", handleUpdateWorldDataObject);
 router.put("/world/fire-toast", handleFireToast);
+
+//checking in
+router.get("/check-in", handleCheckIn);
+router.get("/check-in-info", handleGetCheckInInfo);
+
+//particle effects
+router.post("/particle-effects", handleParticleEffects);
+
+//resetting goal for admin while keeping overall tally
+router.put("/admin-reset", AdminReset); 
+
+//resetting tally for admin while maintaining goal
+router.put("/admin-reset-tally", AdminResetTally);
+
+router.post("/change-image", handleAssetImageLayer);
+
+
 
 export default router;

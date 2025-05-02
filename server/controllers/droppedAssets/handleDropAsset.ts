@@ -23,6 +23,7 @@ export const handleDropAsset = async (req: Request, res: Response): Promise<Reco
     });
 
     return res.json({ droppedAsset, success: true });
+    
   } catch (error) {
     return errorHandler({
       error,

@@ -8,6 +8,8 @@ const config = {
   apiProtocol: process.env.INSTANCE_PROTOCOL || "https",
   interactiveKey: process.env.INTERACTIVE_KEY,
   interactiveSecret: process.env.INTERACTIVE_SECRET,
+  //added by Caleb
+  apiKey: process.env.API_KEY,
 };
 
 const myTopiaInstance = new Topia(config);
