@@ -1,7 +1,7 @@
-import { CheckInAsset } from "../../types/CheckInDataObject.js";
+import { IDroppedAsset } from "../../types/DroppedAssetInterface.js";
 import { errorHandler } from "../errorHandler.js";
 
-export const initializeDefaultCheckInObject = async (droppedAsset: CheckInAsset) => {
+export const initializeDefaultCheckInObject = async (droppedAsset: IDroppedAsset) => {
   try {
     await droppedAsset.fetchDataObject();
 
@@ -15,9 +15,7 @@ export const initializeDefaultCheckInObject = async (droppedAsset: CheckInAsset)
         lock: { lockId },
         overallTally: 0,
         goal: 100,
-        shouldReset: false,
-        isPopped: false,
-        dailyCheckIns: {}
+        dailyCheckIns: {},
       });
     }
 

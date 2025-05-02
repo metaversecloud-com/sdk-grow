@@ -1,18 +1,5 @@
 import express from "express";
-import {
-  handleDropAsset,
-  handleGetDroppedAsset,
-  handleGetVisitor,
-  handleGetWorldDetails,
-  handleUpdateWorldDataObject,
-  handleCheckIn,
-  handleFireToast,
-  handleGetCheckInInfo,
-  handleParticleEffects,
-  AdminReset,
-  AdminResetTally,
-  handleAssetImageLayer
-} from "./controllers/index.js";
+import { handleCheckIn, handleGetGameState, handleUpdateGoal, handleReset } from "./controllers/index.js";
 import { getVersion } from "./utils/getVersion.js";
 
 const router = express.Router();
@@ -36,33 +23,12 @@ router.get("/system/health", (req, res) => {
   });
 });
 
-// Dropped Assets
-router.post("/dropped-asset", handleDropAsset);
-router.get("/dropped-asset", handleGetDroppedAsset);
+router.get("/game-state", handleGetGameState);
 
-// Visitor
-router.get("/visitor", handleGetVisitor);
-
-// World
-router.get("/world", handleGetWorldDetails);
-router.put("/world/data-object", handleUpdateWorldDataObject);
-router.put("/world/fire-toast", handleFireToast);
-
-//checking in
 router.get("/check-in", handleCheckIn);
-router.get("/check-in-info", handleGetCheckInInfo);
 
-//particle effects
-router.post("/particle-effects", handleParticleEffects);
+router.put("/goal", handleUpdateGoal);
 
-//resetting goal for admin while keeping overall tally
-router.put("/admin-reset", AdminReset); 
-
-//resetting tally for admin while maintaining goal
-router.put("/admin-reset-tally", AdminResetTally);
-
-router.post("/change-image", handleAssetImageLayer);
-
-
+router.put("/reset", handleReset);
 
 export default router;
