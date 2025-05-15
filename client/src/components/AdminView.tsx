@@ -50,21 +50,15 @@ export const AdminView = () => {
 
   return (
     <>
-      <div className="mb-4">
-        <p className="text-md">
-          <span className="font-medium">Overall Tally:</span>{" "}
-          <span className="text-blue-700 font-bold">{overallTally}</span>
-        </p>
-        <p className="text-md">
-          <span className="font-medium">Daily Tally:</span> <span className="text-blue-700 font-bold">{tally}</span>
-        </p>
-        <p className="text-md">
-          <span className="font-medium">Goal:</span> <span className="text-blue-700 font-bold">{goal}</span>
-        </p>
-      </div>
+      <div className="mb-4 grid gap-2">
+        <h4>
+          Overall Tally: <strong>{overallTally}</strong>
+        </h4>
+        <h4>Daily Tally: {tally}</h4>
+        <h4>Goal: {goal}</h4>
 
-      <div className="mb-4">
-        <label htmlFor="goal-input" className="block mb-1 text-sm font-medium w-full">
+        <hr className="my-2" />
+        <label htmlFor="goal-input" className="h4">
           Set New Goal:
         </label>
         <input
@@ -74,7 +68,7 @@ export const AdminView = () => {
           max={999}
           value={updatedGoal}
           onChange={(e) => setUpdatedGoal(Number(e.target.value))}
-          className="border border-gray-300 rounded px-3 py-2 w-full"
+          className="input"
         />
       </div>
 

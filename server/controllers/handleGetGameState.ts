@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import { errorHandler, getCredentials, getDroppedAsset, Visitor } from "../utils/index.js";
+import { errorHandler, getCredentials, getDroppedAsset, getImageSrc, Visitor } from "../utils/index.js";
 import { IDroppedAsset } from "../types/DroppedAssetInterface.js";
 import { VisitorInterface } from "@rtsdk/topia";
 
@@ -11,7 +11,7 @@ export const handleGetGameState = async (req: Request, res: Response) => {
 
     const droppedAsset: IDroppedAsset = await getDroppedAsset(credentials);
 
-    const { dailyCheckIns, goal, overallTally, imageSrc } = droppedAsset.dataObject;
+    const { dailyCheckIns, goal, overallTally, imageSrc = getImageSrc() } = droppedAsset.dataObject;
 
     const visitor: VisitorInterface = await Visitor.get(visitorId, urlSlug, { credentials });
 

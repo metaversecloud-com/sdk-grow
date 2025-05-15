@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import { errorHandler, getCredentials, getDroppedAsset, getStage } from "../utils/index.js";
+import { errorHandler, getCredentials, getDroppedAsset, getImageSrc, getStage } from "../utils/index.js";
 import { IDroppedAsset } from "../types/DroppedAssetInterface.js";
 
 export const handleReset = async (req: Request, res: Response) => {
@@ -8,7 +8,7 @@ export const handleReset = async (req: Request, res: Response) => {
 
     const droppedAsset: IDroppedAsset = await getDroppedAsset(credentials);
 
-    const newImageSrc = "https://sdk-grow.s3.us-east-1.amazonaws.com/Pump-0.png";
+    const newImageSrc = getImageSrc();
     await droppedAsset.updateWebImageLayers("", newImageSrc);
 
     //resetting the tally and getting rid of daily records

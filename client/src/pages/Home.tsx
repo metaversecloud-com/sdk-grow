@@ -57,29 +57,19 @@ const Home = () => {
 
   return (
     <PageContainer isLoading={isLoading} headerText="Grow">
-      {/* Reduced space between header and image */}
-      <div className="flex justify-center mt-2 mb-4">
-        <img className="w-80 h-80 object-cover rounded-2xl" alt="Pump" src={imageSrc} />
-      </div>
-
-      <div className="grid gap-4 mb-6">
-        <div className="bg-blue-100 text-blue-900 p-2 rounded-xl text-lg font-semibold text-center shadow">
-          Overall Tally: {overallTally}
+      {imageSrc && (
+        <div className="flex justify-center mt-2 mb-4">
+          <img className="w-80 h-80 object-cover rounded-2xl" alt="Pump" src={imageSrc} />
         </div>
-        <div className="bg-blue-100 text-blue-900 p-2 rounded-xl text-lg font-semibold text-center shadow">
-          Daily Tally: {tally}
-        </div>
-        <div className="bg-blue-100 text-blue-900 p-2 rounded-xl text-lg font-semibold text-center shadow">
-          Goal: {goal}
-        </div>
+      )}
+      <div className="grid gap-4 mb-6 text-center gap-4">
+        <div className="bg-gray-100 p-1 rounded-xl text-lg shadow">Overall Tally: {overallTally}</div>
+        <div className="bg-gray-100 p-1 rounded-xl text-lg shadow">Daily Tally: {tally}</div>
+        <div className="bg-gray-100 p-1 rounded-xl text-lg shadow">Goal: {goal}</div>
       </div>
 
       <div className="mt-6">
-        <button
-          className="bg-blue-600 hover:bg-blue-700 text-white w-full py-3 text-lg rounded-xl"
-          disabled={areButtonsDisabled}
-          onClick={handleCheckIn}
-        >
+        <button className="btn" disabled={areButtonsDisabled} onClick={handleCheckIn}>
           Help Me Grow!
         </button>
       </div>

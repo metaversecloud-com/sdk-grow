@@ -1,5 +1,6 @@
 import { errorHandler } from "../errorHandler.js";
 import { IDroppedAsset } from "../../types/DroppedAssetInterface.js";
+import { getImageSrc } from "../getImageSrc.js";
 
 export const initializeDroppedAssetDataObject = async (droppedAsset: IDroppedAsset) => {
   try {
@@ -14,7 +15,7 @@ export const initializeDroppedAssetDataObject = async (droppedAsset: IDroppedAss
           overallTally: 0,
           goal: 100,
           dailyCheckIns: {},
-          imageSrc: "https://sdk-grow.s3.us-east-1.amazonaws.com/Pump-0.png",
+          imageSrc: getImageSrc(),
         },
         { lock: { lockId, releaseLock: true } },
       );

@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import { errorHandler, getCredentials, getDroppedAsset, getStage } from "../utils/index.js";
+import { errorHandler, getCredentials, getDroppedAsset, getImageSrc, getStage } from "../utils/index.js";
 import { IDroppedAsset } from "../types/DroppedAssetInterface.js";
 
 export const handleUpdateGoal = async (req: Request, res: Response) => {
@@ -15,7 +15,7 @@ export const handleUpdateGoal = async (req: Request, res: Response) => {
     await droppedAsset.updateDataObject({ goal: newGoal });
 
     const stage = getStage(overallTally || 0, newGoal);
-    const newImageSrc = `https://sdk-grow.s3.us-east-1.amazonaws.com/Pump-${stage}.png`;
+    const newImageSrc = getImageSrc(stage);
     await droppedAsset.updateWebImageLayers("", newImageSrc);
 
     await droppedAsset.fetchDataObject();

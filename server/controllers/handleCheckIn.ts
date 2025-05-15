@@ -1,5 +1,13 @@
 import { Request, Response } from "express";
-import { World, errorHandler, getCredentials, getDroppedAsset, getStage, getToday } from "../utils/index.js";
+import {
+  World,
+  errorHandler,
+  getCredentials,
+  getDroppedAsset,
+  getImageSrc,
+  getStage,
+  getToday,
+} from "../utils/index.js";
 import { IDroppedAsset } from "../types/DroppedAssetInterface.js";
 
 export const handleCheckIn = async (req: Request, res: Response) => {
@@ -58,7 +66,7 @@ export const handleCheckIn = async (req: Request, res: Response) => {
 
       //using updateWebImageLayers to update the image layer
       const stage = getStage(newOverallTally, goal);
-      newImageSrc = `https://sdk-grow.s3.us-east-1.amazonaws.com/Pump-${stage}.png`;
+      newImageSrc = getImageSrc(stage);
       await droppedAsset.updateWebImageLayers("", newImageSrc);
 
       const updates = {
