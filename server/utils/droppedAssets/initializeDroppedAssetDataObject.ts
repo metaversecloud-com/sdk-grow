@@ -1,16 +1,25 @@
-import { IDroppedAsset } from "../../types/DroppedAssetInterface.js";
 import { errorHandler } from "../errorHandler.js";
+import { IDroppedAsset } from "../../types/DroppedAssetInterface.js";
+import { getImageSrc } from "../getImageSrc.js";
 
 export const initializeDroppedAssetDataObject = async (droppedAsset: IDroppedAsset) => {
   try {
-    await droppedAsset.fetchDataObject();
-
-    if (!droppedAsset?.dataObject?.count) {
+    //checking if a tally has been set
+    if (!droppedAsset?.dataObject?.goal) {
       // adding a lockId and releaseLock will prevent race conditions and ensure the data object is being updated only once until either the time has passed or the operation is complete
       const lockId = `${droppedAsset.id}-${new Date(Math.round(new Date().getTime() / 60000) * 60000)}`;
-      await droppedAsset.setDataObject({ count: 0 }, { lock: { lockId } });
+      //setting with default values
+      await droppedAsset.setDataObject(
+        {
+          lock: { lockId },
+          overallTally: 0,
+          goal: 100,
+          dailyCheckIns: {},
+          imageSrc: getImageSrc(),
+        },
+        { lock: { lockId, releaseLock: true } },
+      );
     }
-
     return;
   } catch (error) {
     errorHandler({

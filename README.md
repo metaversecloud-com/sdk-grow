@@ -18,7 +18,7 @@ This repository contains an SDK app that allows you to check in as a non-admin/a
 ### Drawer content
 
 - How to play instructions: As a non-admin/user, open the drawer in the iframe by clicking on the key asset. Press the check in button (only allowed once daily) to increase
-  the number of pumps of the balloon by 1. The balloon will keep growing larger at certain milestones (20 pngs/ 20 stages) until it eventually pops. At that point, you are no longer allowed to check in. 
+  the number of pumps of the balloon by 1. The balloon will keep growing larger at certain milestones (20 pngs/ 20 stages) until it eventually pops. At that point, you are no longer allowed to check in.
 - Admin features (see below)
 
 ### Admin features
@@ -45,22 +45,24 @@ _We use data objects to store information about each implementation of the app p
   - resetCount
   - turnCount
 - World: the data object attached to the world will store analytics information for every instance of the app in a given world by keyAssetId and will persist even if a specific instance is removed from world. Example data:
+
   - gamesPlayedByUser (`keyAssets.${assetId}.gamesPlayedByUser.${profileId}.count`)
   - gamesWonByUser (`keyAssets.${keyAssetId}.gamesWonByUser.${profileId}.count`)
   - totalGamesResetCount (`keyAssets.${assetId}.totalGamesResetCount`)
   - totalGamesWonCount (`keyAssets.${assetId}.totalGamesWonCount`)
- 
+
   droppedAsset:
   Made CheckInDataObject interface:
+
   - dailyCheckIns: records the total number of check ins on that day as well as a list of users who checked in that day (maps the date to users and total for that day)
   - goal: the goal number of check ins
   - overallTally: the total number of check ins during that session, regardless of days. Once the admin resets the tally, this goes back to 0.
-  - isPopped: is the balloon popped? (number of check ins >= goal)
   - shouldReset: should the tally be reset? (not really utilized in application)
-  
 
 ## Developers:
+
 Caleb Hollander
+
 ### Built With
 
 #### Client

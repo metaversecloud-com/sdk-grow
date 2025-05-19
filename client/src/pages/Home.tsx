@@ -1,142 +1,51 @@
 import { useContext, useEffect, useState } from "react";
 
 // components
-import { PageContainer, PageFooter } from "@/components";
+import { PageContainer } from "@/components";
 
 // context
 import { GlobalDispatchContext, GlobalStateContext } from "@/context/GlobalContext";
 
 // utils
-import { backendAPI, setErrorMessage, setGameState } from "@/utils";
-
-import { AdminIconButton } from "@/components/AdminIconButton";
-
-const defaultDroppedAsset = { assetName: "", bottomLayerURL: "", id: null, topLayerURL: null };
+import { backendAPI, getTally, setErrorMessage, setGameState } from "@/utils";
 
 const Home = () => {
   const dispatch = useContext(GlobalDispatchContext);
   const { gameState, hasInteractiveParams, hasSetupBackend } = useContext(GlobalStateContext);
+  const { dailyCheckIns, goal, overallTally, imageSrc } = gameState || {};
 
-  const [isLoading, setIsLoading] = useState(false);
+  const tally = getTally(dailyCheckIns);
+
+  const [isLoading, setIsLoading] = useState(true);
   const [areButtonsDisabled, setAreButtonsDisabled] = useState(false);
-  const [droppedAsset, setDroppedAsset] = useState(defaultDroppedAsset);
-
-  const [showSettings, setShowSettings] = useState(false);
-
-  const [admin, SetIsAdmin] = useState(false);
-
-  const [tally, setTally] = useState(0);
-  const[overallTally,setOverallTally] = useState(0);
-  const[position, setPosition] = useState({ x: 0, y: 0 });
-
-  const[pump_number, setPumpNumber] = useState(0);
-
-  const[goal, setGoal] = useState(0);
 
   useEffect(() => {
-    
     if (hasInteractiveParams) {
-      backendAPI.get("/world").then((response) => {
-        setGameState(dispatch, response.data);
-        //setDroppedAsset(response.data.droppedAsset);
-
-        return Promise.all([
-          backendAPI.get("/visitor"),
-          backendAPI.get("/check-in-info"),
-        ])
-       .then(([visitorRes, checkInInfoRes]) => {
-          
-  
-          const { visitor } = visitorRes.data;
-          SetIsAdmin(visitor.isAdmin);
-  
-          setTally(checkInInfoRes.data.tally);
-          
-          setGoal(checkInInfoRes.data.goalToPop);
-          setOverallTally(checkInInfoRes.data.overallTally);
-          const pump_stage = getPumpStage(checkInInfoRes.data.overallTally, checkInInfoRes.data.goalToPop);
-          setPumpNumber(pump_stage);
-          
-          setPosition(checkInInfoRes.data.droppedAsset.position);
-  
+      backendAPI
+        .get("/game-state")
+        .then((response) => {
+          const { gameState, visitor } = response.data;
+          setGameState(dispatch, { gameState, visitor });
         })
-      })
-      .catch((error) => {
-        console.error("Error fetching initial data from /world:", error);
-        setErrorMessage(dispatch, error);
-      })
-      .finally(() => {
-        setIsLoading(false);
-        setAreButtonsDisabled(false);
-        console.log("🚀 ~ Home.tsx ~ gameState:", gameState);
-      });
-
-        
+        .catch((error) => {
+          console.error("Error fetching game state", error);
+          setErrorMessage(dispatch, error);
+        })
+        .finally(() => {
+          setIsLoading(false);
+          setAreButtonsDisabled(false);
+        });
     }
   }, [hasInteractiveParams]);
-//whenever pump number changes or hasInteractiveParams changes, send to backend to change asset image
-  useEffect(() => {
-    
-    if (pump_number !== null && hasInteractiveParams) {
-      backendAPI.post("/change-image", { stage: pump_number });
-      
-    }
-  },[pump_number, hasInteractiveParams]);
-
-  //gets which stage the pump is at
-  const getPumpStage = (tally:number, goal:number):number => {
-    //("TALLY AND GOAL: ", tally, goal);
-    //20 pictures
-    const stages = 20;
-    if(!goal || tally <= 0){
-      return 0;
-    }
-    const ratio = tally/goal;
-    const curr_stage = Math.min(stages - 1, Math.floor(ratio * stages));
-    return curr_stage;
-  }
 
   const handleCheckIn = async () => {
     setAreButtonsDisabled(true);
-    //setDroppedAsset(defaultDroppedAsset);
 
     backendAPI
       .get("/check-in")
       .then((response) => {
-        //setting tally and overall tally
-        setTally(response.data.tally);
-        setOverallTally(response.data.overallTally);
-        const pump_stage = getPumpStage(response.data.overallTally, response.data.goalToPop);
-        setPumpNumber(pump_stage);
-        
-       
-        //if successful check in, even if goal is not reached or balloon popped or already checked in still fire 
-        if(response.status = 200){
-          //sending particle effects
-          backendAPI.post("/particle-effects", {includeDataObject: true}, {
-        params: {
-          //getting position to fire particle effects - couldn't find in devdocs getting position not in droppedasset
-          params: { x: position.x, y: position.y }
-        },
-        })
-    .then((response) => {
-    
-      });
-            }
-          })
-        .catch((error) => setErrorMessage(dispatch, error))
-        .finally(() => {
-          setAreButtonsDisabled(false);
-        });
-  };
-
-  const handleWorldAsset = async () => {
-    setAreButtonsDisabled(true);
-
-    backendAPI
-      .get("/world")
-      .then((response) => {
-        return response;
+        const { gameState } = response.data;
+        setGameState(dispatch, { gameState });
       })
       .catch((error) => setErrorMessage(dispatch, error))
       .finally(() => {
@@ -144,57 +53,27 @@ const Home = () => {
       });
   };
 
-  const handleVisitor = async () => {
-    setAreButtonsDisabled(true);
-    //setDroppedAsset(defaultDroppedAsset);
-  };
-
   if (!hasSetupBackend) return <div />;
 
   return (
-    <PageContainer isLoading={isLoading}>
-    <div className="p-6">
-      <div className="flex justify-between items-center mb-2">
-        <h1 className="text-3xl font-bold text-gray-800">Grow App</h1>
-        {admin && (
-          <div className="ml-auto">
-            <AdminIconButton showSettings={showSettings} setShowSettings={setShowSettings} />
-          </div>
-        )}
-      </div>
-
-      {/* Reduced space between header and image */}
-      <div className="flex justify-center mt-2 mb-4">
-        <img
-          className="w-80 h-80 object-cover rounded-2xl"
-          alt="Pump"
-          src={`../../pumps_balloons/Pump-${pump_number}.png`}
-        />
-      </div>
-
-      <div className="grid gap-4 mb-6">
-        <div className="bg-blue-100 text-blue-900 p-2 rounded-xl text-lg font-semibold text-center shadow">
-          Overall Tally: {overallTally}
+    <PageContainer isLoading={isLoading} headerText="Grow">
+      {imageSrc && (
+        <div className="flex justify-center mt-2 mb-4">
+          <img className="w-80 h-80 object-cover rounded-2xl" alt="Pump" src={imageSrc} />
         </div>
-        <div className="bg-blue-100 text-blue-900 p-2 rounded-xl text-lg font-semibold text-center shadow">
-          Daily Tally: {tally}
-        </div>
-        <div className="bg-blue-100 text-blue-900 p-2 rounded-xl text-lg font-semibold text-center shadow">
-          Goal: {goal}
-        </div>
+      )}
+      <div className="grid gap-4 mb-6 text-center gap-4">
+        <div className="bg-gray-100 p-1 rounded-xl text-lg shadow">Overall Tally: {overallTally}</div>
+        <div className="bg-gray-100 p-1 rounded-xl text-lg shadow">Daily Tally: {tally}</div>
+        <div className="bg-gray-100 p-1 rounded-xl text-lg shadow">Goal: {goal}</div>
       </div>
 
       <div className="mt-6">
-  <button
-    className="bg-blue-600 hover:bg-blue-700 text-white w-full py-3 text-lg rounded-xl"
-    disabled={areButtonsDisabled}
-    onClick={handleCheckIn}
-  >
-    Help Me Grow!
-  </button>
-</div>
-    </div>
-  </PageContainer>
+        <button className="btn" disabled={areButtonsDisabled} onClick={handleCheckIn}>
+          Help Me Grow!
+        </button>
+      </div>
+    </PageContainer>
   );
 };
 

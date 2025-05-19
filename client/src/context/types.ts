@@ -19,12 +19,17 @@ export type InteractiveParams = {
 
 export interface InitialState {
   error?: string;
-  gameState?: object;
+  gameState?: {
+    dailyCheckIns: Record<string, { total: number }>;
+    goal: number;
+    overallTally: number;
+    imageSrc: string;
+  };
   hasInteractiveParams?: boolean;
   hasSetupBackend?: boolean;
   profileId?: string;
   sceneDropId?: string;
-  visitor?: { isAdmin: boolean; isInZone: boolean };
+  visitor?: { isAdmin: boolean };
 }
 
 export type ActionType = {
