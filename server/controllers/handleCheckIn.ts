@@ -95,7 +95,7 @@ export const handleCheckIn = async (req: Request, res: Response) => {
 
       world
         .triggerParticle({
-          name: "Flame",
+          name: "balloon_float",
           duration: 3,
           position: { x: droppedAsset.position.x, y: droppedAsset.position.y },
         })
