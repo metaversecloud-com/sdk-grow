@@ -1,5 +1,6 @@
 import { Request, Response } from "express";
 import {
+  Visitor,
   World,
   errorHandler,
   getCredentials,
@@ -13,9 +14,10 @@ import { IDroppedAsset } from "../types/DroppedAssetInterface.js";
 export const handleCheckIn = async (req: Request, res: Response) => {
   try {
     const credentials = getCredentials(req.query);
-    const profileId = credentials.profileId;
+    const { profileId, urlSlug, visitorId } = credentials;
 
-    const world = World.create(credentials.urlSlug, { credentials });
+    const world = World.create(urlSlug, { credentials });
+    const visitor = Visitor.create(visitorId, urlSlug, { credentials });
 
     const droppedAsset: IDroppedAsset = await getDroppedAsset(credentials);
 
@@ -33,7 +35,7 @@ export const handleCheckIn = async (req: Request, res: Response) => {
 
     if (todayEntry.users[profileId]) {
       //if users is in date mapping (already checked in), return already checked in json message
-      await world
+      await visitor
         .fireToast({
           title: "Already Checked In",
           text: "You are already checked in. Please come back tomorrow!",
@@ -48,7 +50,7 @@ export const handleCheckIn = async (req: Request, res: Response) => {
     } else if (overallTally >= goal) {
       //unable to check in - goal already met/balloon already popped
       //firing toast for meeting goal
-      await world
+      await visitor
         .fireToast({
           title: "Already met goal",
           text: "You have already met the goal!",
@@ -80,7 +82,7 @@ export const handleCheckIn = async (req: Request, res: Response) => {
       await droppedAsset.updateDataObject(updates);
 
       //firing toast for successful check in
-      world
+      visitor
         .fireToast({
           title: "Successfully Checked In",
           text: "You have successfully checked in! Please come back tomorrow!",
