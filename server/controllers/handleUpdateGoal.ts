@@ -5,6 +5,7 @@ import { IDroppedAsset } from "../types/DroppedAssetInterface.js";
 export const handleUpdateGoal = async (req: Request, res: Response) => {
   try {
     const credentials = getCredentials(req.query);
+    const { profileId } = credentials;
 
     const droppedAsset: IDroppedAsset = await getDroppedAsset(credentials);
 
@@ -12,7 +13,17 @@ export const handleUpdateGoal = async (req: Request, res: Response) => {
 
     const newGoal = parseInt(req.body.goal as string);
 
-    await droppedAsset.updateDataObject({ goal: newGoal });
+    await droppedAsset.updateDataObject(
+      { goal: newGoal },
+      {
+        analytics: [
+          {
+            analyticName: "new_configurations",
+            uniqueKey: profileId,
+          },
+        ],
+      },
+    );
 
     const stage = getStage(overallTally || 0, newGoal);
     const newImageSrc = getImageSrc(stage);

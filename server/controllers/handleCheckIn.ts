@@ -33,6 +33,13 @@ export const handleCheckIn = async (req: Request, res: Response) => {
     let newOverallTally = overallTally,
       newImageSrc = imageSrc;
 
+    const analytics: { analyticName: string; uniqueKey?: string }[] = [
+      {
+        analyticName: "completions",
+        uniqueKey: profileId,
+      },
+    ];
+
     if (todayEntry.users[profileId]) {
       //if users is in date mapping (already checked in), return already checked in json message
       await visitor
@@ -66,6 +73,12 @@ export const handleCheckIn = async (req: Request, res: Response) => {
       //adding 1 to overall tally
       newOverallTally = overallTally + 1;
 
+      if (newOverallTally === goal) {
+        analytics.push({
+          analyticName: "goal_reached",
+        });
+      }
+
       //using updateWebImageLayers to update the image layer
       const stage = getStage(newOverallTally, goal);
       newImageSrc = getImageSrc(stage);
@@ -79,7 +92,7 @@ export const handleCheckIn = async (req: Request, res: Response) => {
         imageSrc: newImageSrc,
       };
 
-      await droppedAsset.updateDataObject(updates);
+      await droppedAsset.updateDataObject(updates, { analytics });
 
       //firing toast for successful check in
       visitor

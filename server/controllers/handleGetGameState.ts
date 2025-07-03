@@ -7,13 +7,20 @@ import { VisitorInterface } from "@rtsdk/topia";
 export const handleGetGameState = async (req: Request, res: Response) => {
   try {
     const credentials = getCredentials(req.query);
-    const { visitorId, urlSlug } = credentials;
+    const { profileId, visitorId, urlSlug } = credentials;
 
     const droppedAsset: IDroppedAsset = await getDroppedAsset(credentials);
 
     const { dailyCheckIns, goal, overallTally, imageSrc = getImageSrc() } = droppedAsset.dataObject;
 
     const visitor: VisitorInterface = await Visitor.get(visitorId, urlSlug, { credentials });
+
+    visitor.updateDataObject(
+      {},
+      {
+        analytics: [{ analyticName: "starts", uniqueKey: profileId }],
+      },
+    );
 
     return res.json({
       success: true,
