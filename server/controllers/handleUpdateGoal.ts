@@ -43,8 +43,8 @@ export const handleUpdateGoal = async (req: Request, res: Response) => {
   } catch (error) {
     return errorHandler({
       error,
-      functionName: "getDroppedAssetDetails",
-      message: "Error getting dropped asset instance and data object in AdminReset",
+      functionName: "handleUpdateGoal",
+      message: "Error updating goal",
       req,
       res,
     });

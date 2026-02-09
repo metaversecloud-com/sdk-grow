@@ -36,7 +36,7 @@ export const handleGetGameState = async (req: Request, res: Response) => {
   } catch (error) {
     return errorHandler({
       error,
-      functionName: "getDroppedAssetDetails",
+      functionName: "handleGetGameState",
       message: "Error getting dropped asset instance and data object",
       req,
       res,
