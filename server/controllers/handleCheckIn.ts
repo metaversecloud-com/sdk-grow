@@ -132,8 +132,8 @@ export const handleCheckIn = async (req: Request, res: Response) => {
   } catch (error) {
     return errorHandler({
       error,
-      functionName: "getDroppedAssetDetails",
-      message: "Error getting dropped asset instance and data object",
+      functionName: "handleCheckIn",
+      message: "Error checking in",
       req,
       res,
     });
