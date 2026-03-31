@@ -59,6 +59,16 @@ The data object attached to the dropped asset stores:
 }
 ```
 
+## Implementation Requirements
+
+### Required Assets with Unique Names
+
+The app uses the following unique name patterns for managing dropped assets:
+
+| Unique Name Pattern | Description |
+| ------------------- | ----------- |
+| `Grow_keyAsset`     | Key asset   |
+
 ## Environment Variables
 
 Create a `.env` file in the root directory. See `.env-example` for a template.
