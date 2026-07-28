@@ -1,17 +1,14 @@
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
-
 # No `namespace:` directive: the interceptor Ingress must stay in `keda`; the
 # workload resources carry no namespace and Argo injects the Application's
 # destination namespace (sdk-apps-dev).
-
 resources:
   - ../../services/grow0
   - grow0-config.yaml
   - grow0-sealedsecret.yaml
   - grow0-httpscaledobject.yaml
   - grow0-interceptor-ingress.yaml
-
 patches:
   # Drop the direct ALB Ingress: in dev the app is fronted through the KEDA
   # interceptor so a scaled-to-zero Deployment is woken by the first request.
@@ -24,10 +21,9 @@ patches:
       kind: Ingress
       metadata:
         name: grow0
-
 # Per-service image (defaults to the shared dev ECR sdk-example:<repo>; an
 # independent deployment may pin a different tag/image).
 images:
   - name: grow0
     newName: 368076259134.dkr.ecr.us-east-1.amazonaws.com/sdk-example
-    newTag: sdk-grow
+    digest: sha256:ee7f6abaf27a900087923ee24b0e29e0fba53f0f487264f6a84c49d4b7b7af21
