@@ -27,3 +27,4 @@ images:
   - name: grow0
     newName: 368076259134.dkr.ecr.us-east-1.amazonaws.com/sdk-example
     digest: sha256:9e224b73cf1b746fd69d83f5fd96116fd1df711c368d47e96bab7784cde80c56
+    newTag: sdk-grow
