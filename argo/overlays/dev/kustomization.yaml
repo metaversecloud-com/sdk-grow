@@ -26,5 +26,5 @@ patches:
 images:
   - name: grow0
     newName: 368076259134.dkr.ecr.us-east-1.amazonaws.com/sdk-example
-    digest: sha256:11103a8b0c258f66d622d6feed24d0bd6303d9fdf2ceea76eca7f6456dadac98
+    digest: sha256:d70f38d728c6b383dec29f771a0e490a273a9f3a4c324763cea23eae92c04b48
     newTag: sdk-grow
