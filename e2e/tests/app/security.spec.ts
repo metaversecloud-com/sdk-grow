@@ -1,5 +1,5 @@
 // Permission checks and anti-cheat: what a player can do by calling the API directly.
-import { OtherVisitor, checkIns, dayKey, expect, growData, pumpImage, test } from "../../fixtures";
+import { checkIns, dayKey, expect, growData, pumpImage, test } from "../../fixtures";
 
 test.describe("admin endpoints reject players", () => {
   const calls = [
@@ -61,14 +61,10 @@ test.describe("one check-in per player per day", () => {
 test.describe("players checking in at the same time", () => {
   test("every check-in counts toward the balloon", async ({ page, world }) => {
     test.fail(true, "EXP-444: check-in writes overallTally and the daily total computed from a stale read, so simultaneous check-ins overwrite each other");
-    const players: OtherVisitor[] = Array.from({ length: 6 }, (_, i) => ({
-      visitorId: 100 + i,
-      profileId: `${world.profileId}-p${i}`,
-      displayName: `Player ${i}`,
-    }));
-    await world.seed({ assetData: growData({ goal: 100 }), otherVisitors: players, latencyMs: 50 });
+    const players = Array.from({ length: 6 }, (_, i) => 100 + i);
+    await world.seed({ assetData: growData({ goal: 100 }), otherVisitors: Object.fromEntries(players.map((id) => [id, {}])), latencyMs: 50 });
 
-    const responses = await Promise.all(players.map((p) => page.request.get(world.api("/check-in", world.as(p)))));
+    const responses = await Promise.all(players.map((id) => page.request.get(world.api("/check-in", world.as(id)))));
 
     expect(responses.every((r) => r.ok())).toBe(true);
     const data = await world.assetData();
@@ -79,14 +75,10 @@ test.describe("players checking in at the same time", () => {
 
   test("the goal can't be overshot by the last check-ins arriving together", async ({ page, world }) => {
     test.fail(true, "EXP-444: check-in reads the tally and writes it back without a lock, so the goal check uses a stale tally");
-    const players: OtherVisitor[] = Array.from({ length: 4 }, (_, i) => ({
-      visitorId: 100 + i,
-      profileId: `${world.profileId}-p${i}`,
-      displayName: `Player ${i}`,
-    }));
-    await world.seed({ assetData: growData({ goal: 10, overallTally: 9, imageSrc: pumpImage(18) }), otherVisitors: players, latencyMs: 50 });
+    const players = Array.from({ length: 4 }, (_, i) => 100 + i);
+    await world.seed({ assetData: growData({ goal: 10, overallTally: 9, imageSrc: pumpImage(18) }), otherVisitors: Object.fromEntries(players.map((id) => [id, {}])), latencyMs: 50 });
 
-    await Promise.all(players.map((p) => page.request.get(world.api("/check-in", world.as(p)))));
+    await Promise.all(players.map((id) => page.request.get(world.api("/check-in", world.as(id)))));
 
     // Exactly one player gets the last pump; the others are told the goal is met.
     expect((await world.assetData()).overallTally).toBe(10);
@@ -95,14 +87,10 @@ test.describe("players checking in at the same time", () => {
   });
 
   test("players opening a new balloon at the same time all get it set up", async ({ page, world }) => {
-    const players: OtherVisitor[] = Array.from({ length: 4 }, (_, i) => ({
-      visitorId: 100 + i,
-      profileId: `${world.profileId}-p${i}`,
-      displayName: `Player ${i}`,
-    }));
-    await world.seed({ otherVisitors: players, latencyMs: 30 });
+    const players = Array.from({ length: 4 }, (_, i) => 100 + i);
+    await world.seed({ otherVisitors: Object.fromEntries(players.map((id) => [id, {}])), latencyMs: 30 });
 
-    const responses = await Promise.all(players.map((p) => page.request.get(world.api("/game-state", world.as(p)))));
+    const responses = await Promise.all(players.map((id) => page.request.get(world.api("/game-state", world.as(id)))));
 
     for (const response of responses) {
       expect(response.ok()).toBe(true);
